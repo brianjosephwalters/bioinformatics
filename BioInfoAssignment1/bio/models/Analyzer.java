@@ -12,7 +12,7 @@ public class Analyzer {
 	
 	public void determineType(Sequence sequence) {
 		String seq = sequence.getSequence().toUpperCase();
-		// use StringUtils.containsAny(s, "EFIGLOPQZ");
+		// use StringUtils.containsAny(s, "EFIGLOPQZ*");
 	    if ( seq.contains("E") ||
 	    	 seq.contains("F") ||
 	    	 seq.contains("I") ||
@@ -67,8 +67,6 @@ public class Analyzer {
 
 	}
 	
-	
-	
 	public List<Hashtable<String, Integer>> determineTotals(List<Sequence> list) {
 		List<Hashtable<String, Integer>> tables = new ArrayList<Hashtable<String,Integer>>();
 		Hashtable<String, Integer> aminoAcidTable = new Hashtable<String, Integer>();
@@ -82,7 +80,7 @@ public class Analyzer {
 					int additionalAmount = tempTable.get(key);
 					int currentTotal = 0;
 					if (additionalAmount != 0) {
-						if (nucleicAcidTable .containsKey(key)) {
+						if (nucleicAcidTable.containsKey(key)) {
 							currentTotal = nucleicAcidTable.get(key);
 						}
 						nucleicAcidTable.put(key,  currentTotal + additionalAmount);
@@ -94,7 +92,7 @@ public class Analyzer {
 					int additionalAmount = tempTable.get(key);
 					int currentTotal = 0;
 					if (additionalAmount != 0) {
-						if (aminoAcidTable .containsKey(key)) {
+						if (aminoAcidTable.containsKey(key)) {
 							currentTotal = aminoAcidTable.get(key);
 						}
 						aminoAcidTable.put(key,  currentTotal + additionalAmount);
@@ -108,5 +106,23 @@ public class Analyzer {
 		tables.add(nucleicAcidTable);
 		tables.add(aminoAcidTable);
 		return tables;
+	}
+	
+	public List<Hashtable<String, Integer>> aggregateTotals (
+			List<Hashtable<String, Integer>> aggregate, List<Hashtable<String,Integer>> list) {
+		// Nucleic Acid Hashtable = 0, Amino Acid Hashtable = 1;
+		for (int table = 0; table < 2; table++) {
+			for (String key : list.get(table).keySet()) {
+				int additionalAmount = list.get(table).get(key);
+				int currentTotal = 0;
+				if (additionalAmount != 0) {
+					if (aggregate.get(table).containsKey(key)) {
+						currentTotal = aggregate.get(table).get(key);
+					}
+					aggregate.get(table).put(key, currentTotal + additionalAmount);
+				}
+			}
+		}
+		return aggregate;
 	}
 }

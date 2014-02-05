@@ -1,24 +1,35 @@
 package bio.controllers;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import bio.models.Sequence;
 
-
-public class Controller {
+public class ChunkParser {
+	private int chunkSize;
+	private Scanner scanner;
 	
-	public ArrayList<Sequence> parseFile(String filename) {
-		ArrayList<Sequence> list = new ArrayList<Sequence>();
-		Scanner scanner = null;
+	public ChunkParser(String filename) {
+		this(filename, 100);
+	}
+	
+	public ChunkParser(String filename, int chunkSize) {
 		try {
-			scanner = new Scanner(new File(filename));
+			scanner = new Scanner( new File(filename) );
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
+		this.chunkSize = chunkSize;
+	}
+	
+	public List<Sequence> parseChunk() {
+		ArrayList<Sequence> list = new ArrayList<Sequence>();
+		
 		Sequence sequence = new Sequence();
-		while (scanner.hasNextLine()) {
+		while (scanner.hasNextLine() && list.size() < chunkSize) {
 			String line = scanner.nextLine();
 			if (!line.isEmpty() && line.charAt(0) == '>') {
 				sequence = new Sequence(line.substring(1));
@@ -32,7 +43,10 @@ public class Controller {
 				sequence.appendSequence(line);
 			}
 		}
-		scanner.close();
 		return list;
+	}
+	
+	public void close() {
+		scanner.close();
 	}
 }
