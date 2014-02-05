@@ -108,8 +108,8 @@ public class Analyzer {
 		return tables;
 	}
 	
-	public List<Hashtable<String, Integer>> aggregateTotals (
-			List<Hashtable<String, Integer>> aggregate, List<Hashtable<String,Integer>> list) {
+	public List<Hashtable<String, Integer>> aggregateTotals (List<Hashtable<String, Integer>> aggregate, 
+															 List<Hashtable<String, Integer>> list) {
 		// Nucleic Acid Hashtable = 0, Amino Acid Hashtable = 1;
 		for (int table = 0; table < 2; table++) {
 			for (String key : list.get(table).keySet()) {
@@ -125,4 +125,28 @@ public class Analyzer {
 		}
 		return aggregate;
 	}
+	
+	public int calculateTotalAcids(Hashtable<String, Integer> table) {
+		int total = 0;
+		for (String key : table.keySet()) {
+			total += table.get(key);
+		}
+		return total;
+	}
+	
+	public List<Hashtable<String, Double>> calculateFrequencies (List<Hashtable<String, Integer>> totals) {
+		List<Hashtable<String, Double>> frequencies = new ArrayList<Hashtable<String,Double>>();
+		frequencies.add(new Hashtable<String, Double>());
+		frequencies.add(new Hashtable<String, Double>());
+		// Nucleic Acid Hashtable = 0, Amino Acid Hashtable = 1;
+		for (int table = 0; table < 2; table ++) {
+			int totalAcids = calculateTotalAcids(totals.get(table));
+			for (String key : totals.get(table).keySet()) {
+				Double amount = new Double(totals.get(table).get(key));
+				frequencies.get(table).put(key, amount/totalAcids);
+			}
+		}
+		return frequencies;
+	}
+	
 }
