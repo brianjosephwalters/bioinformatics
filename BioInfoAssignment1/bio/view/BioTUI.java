@@ -22,28 +22,28 @@ import bio.models.Sequence;
 public class BioTUI {
 	
 	// Default file locations
-	public static final String VITIS_DNA_TEST = "C:\\Users\\bjw\\Bio Data\\Vitis vinifera DNA test.fasta";
-	public static final String VITIS_DNA_MEDIUM = "C:\\Users\\bjw\\Bio Data\\Vitis vinifera DNA medium.fasta";
+	public static final String VITIS_DNA_TEST = "data\\Vitis vinifera DNA test.fasta";
+	public static final String VITIS_DNA_MEDIUM = "data\\Vitis vinifera DNA medium.fasta";
 	public static final String VITIS_DNA_FULL = "C:\\Users\\bjw\\Bio Data\\Vitis vinifera DNA.fasta";
 	
-	public static final String VITIS_PROTEIN_TEST = "C:\\Users\\bjw\\Bio Data\\Vitis vinifera Protein test.fasta";
-	public static final String VITIS_PROTEIN_MEDIUM = "C:\\Users\\bjw\\Bio Data\\Vitis vinifera Protein medium.fasta";
+	public static final String VITIS_PROTEIN_TEST = "data\\Vitis vinifera Protein test.fasta";
+	public static final String VITIS_PROTEIN_MEDIUM = "data\\Vitis vinifera Protein medium.fasta";
 	public static final String VITIS_PROTEIN_FULL = "C:\\Users\\bjw\\Bio Data\\Vitis vinifera Protein.fasta";
 	
-	public static final String VITIS_RESULTS_TEST = "C:\\Users\\bjw\\Bio Data\\Vitis vinifera results test.fasta";
-	public static final String VITIS_RESULTS_MEDIUM = "C:\\Users\\bjw\\Bio Data\\Vitis vinifera results medium.fasta";
+	public static final String VITIS_RESULTS_TEST = "data\\Vitis vinifera results test.fasta";
+	public static final String VITIS_RESULTS_MEDIUM = "data\\Vitis vinifera results medium.fasta";
 	public static final String VITIS_RESULTS_FULL = "C:\\Users\\bjw\\Bio Data\\Vitis vinifera results.fasta";
 	
-	public static final String NICOTIANA_DNA_TEST = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum DNA test.fasta";
-	public static final String NICOTIANA_DNA_MEDIUM = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum DNA medium.fasta";
+	public static final String NICOTIANA_DNA_TEST = "data\\Nicotiana tabacum DNA test.fasta";
+	public static final String NICOTIANA_DNA_MEDIUM = "data\\Nicotiana tabacum DNA medium.fasta";
 	public static final String NICOTIANA_DNA_FULL = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum DNA.fasta";
 	
-	public static final String NICOTIANA_PROTEIN_TEST = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum Protein test.fasta";
-	public static final String NICOTIANA_PROTEIN_MEDIUM = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum Protein medium.fasta";
+	public static final String NICOTIANA_PROTEIN_TEST = "data\\Nicotiana tabacum Protein test.fasta";
+	public static final String NICOTIANA_PROTEIN_MEDIUM = "data\\Nicotiana tabacum Protein medium.fasta";
 	public static final String NICOTIANA_PROTEIN_FULL = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum Protein.fasta";
 
-	public static final String NICOTIANA_RESULTS_TEST = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum results test.fasta";
-	public static final String NICOTIANA_RESULTS_MEDIUM = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum results medium.fasta";
+	public static final String NICOTIANA_RESULTS_TEST = "data\\Nicotiana tabacum results test.fasta";
+	public static final String NICOTIANA_RESULTS_MEDIUM = "data\\Nicotiana tabacum results medium.fasta";
 	public static final String NICOTIANA_RESULTS_FULL = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum results.fasta";
 	
 	Scanner scanner;			// Used to receive user input.
