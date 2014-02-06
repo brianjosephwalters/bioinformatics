@@ -30,9 +30,9 @@ public class BioTUI {
 	public static final String VITIS_PROTEIN_MEDIUM = "data\\Vitis vinifera Protein medium.fasta";
 	public static final String VITIS_PROTEIN_FULL = "C:\\Users\\bjw\\Bio Data\\Vitis vinifera Protein.fasta";
 	
-	public static final String VITIS_RESULTS_TEST = "data\\Vitis vinifera results test.fasta";
-	public static final String VITIS_RESULTS_MEDIUM = "data\\Vitis vinifera results medium.fasta";
-	public static final String VITIS_RESULTS_FULL = "C:\\Users\\bjw\\Bio Data\\Vitis vinifera results.fasta";
+	public static final String VITIS_RESULTS_TEST = "results\\Vitis vinifera results test.txt";
+	public static final String VITIS_RESULTS_MEDIUM = "results\\Vitis vinifera results medium.txt";
+	public static final String VITIS_RESULTS_FULL = "C:\\Users\\bjw\\Bio Data\\Vitis vinifera results.txt";
 	
 	public static final String NICOTIANA_DNA_TEST = "data\\Nicotiana tabacum DNA test.fasta";
 	public static final String NICOTIANA_DNA_MEDIUM = "data\\Nicotiana tabacum DNA medium.fasta";
@@ -42,9 +42,9 @@ public class BioTUI {
 	public static final String NICOTIANA_PROTEIN_MEDIUM = "data\\Nicotiana tabacum Protein medium.fasta";
 	public static final String NICOTIANA_PROTEIN_FULL = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum Protein.fasta";
 
-	public static final String NICOTIANA_RESULTS_TEST = "data\\Nicotiana tabacum results test.fasta";
-	public static final String NICOTIANA_RESULTS_MEDIUM = "data\\Nicotiana tabacum results medium.fasta";
-	public static final String NICOTIANA_RESULTS_FULL = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum results.fasta";
+	public static final String NICOTIANA_RESULTS_TEST = "results\\Nicotiana tabacum results test.txt";
+	public static final String NICOTIANA_RESULTS_MEDIUM = "results\\Nicotiana tabacum results medium.txt";
+	public static final String NICOTIANA_RESULTS_FULL = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum results.txt";
 	
 	Scanner scanner;			// Used to receive user input.
 	FileParser fileParser;      // Used to parse entire files.
@@ -188,6 +188,7 @@ public class BioTUI {
 		System.out.println("Report data for small sample.....................1");
 		System.out.println("Report data for medium sample....................2");
 		System.out.println("Report data for medium sample using chunking*....3");
+		System.out.println("############ LARGE DATA NOT PROVIDED #############");
 		System.out.println("Report data for entire sample....................4");
 		System.out.println("Report data for entire sample using chunking*....5");
 		System.out.println("Back.............................................0");
@@ -202,6 +203,7 @@ public class BioTUI {
 		System.out.println("Report data for small sample.....................1");
 		System.out.println("Report data for medium sample....................2");
 		System.out.println("Report data for medium sample using chunking*....3");
+		System.out.println("############ LARGE DATA NOT PROVIDED #############");
 		System.out.println("Report data for entire sample....................4");
 		System.out.println("Report data for entire sample using chunking*....5");
 		System.out.println("Back.............................................0");
@@ -215,7 +217,8 @@ public class BioTUI {
 		System.out.println("----------------------Main Menu------------------------");
 		System.out.println("Calculate frequencies for Vitis vinifera............. 1");
 		System.out.println("Calculate frequencies for Nicotiana tabacum.......... 2");
-		System.out.println("Calculate frequencies from FASTA file................10");
+		// TODO: Implement single file options.
+		//System.out.println("Calculate frequencies from FASTA file................10");
 		System.out.println("Exit................................................. 0");
 	}
 	
@@ -302,10 +305,12 @@ public class BioTUI {
 	/**
 	 * Allows the user to provide an input FASTA file and an output file name
 	 *  and then calculates the totals and frequencies for the FASTA file.
+	 *  TODO: Needs to be implemented
 	 */
+	
 	public void performChoiceFasta() {
-		System.out.println("Enter a FASTA file to load:");
-		String filename = scanner.nextLine();
+		//System.out.println("Enter a FASTA file to load:");
+		//String filename = scanner.nextLine();
 	}
 	
 	/**
