@@ -12,7 +12,7 @@ import bio.controllers.FileParser;
 import bio.controllers.Reporter;
 import bio.controllers.SubstitutionMatrixParser;
 import bio.models.Analyzer;
-import bio.models.NWAligner2;
+import bio.models.NWAligner;
 import bio.models.Sequence;
 import bio.models.SubstitutionMatrix;
 
@@ -57,7 +57,7 @@ public class BioTUI {
 	FileParser fileParser;      // Used to parse entire files.
 	ChunkParser chunkParser;    // Used to parse chunks of files.
 	Analyzer analyzer;          // Provides methods for analyzing sequences.
-	NWAligner2 aligner2;
+	NWAligner aligner2;
 	
 	/**
 	 * Creates an instance of the TUI.
@@ -335,7 +335,7 @@ public class BioTUI {
 			alpha.appendSequence("HEAGAWGHEE");
 			Sequence beta = new Sequence();
 			beta.appendSequence("PAWHEAE");
-			aligner2 = new NWAligner2(alpha, beta, subMatrix);
+			aligner2 = new NWAligner(alpha, beta, subMatrix);
 			System.out.println(aligner2);
 		}
 		else if (choice == 2) {
@@ -343,7 +343,7 @@ public class BioTUI {
 			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix2();
 			Sequence mus = fileParser.parseFile(MUS_MUSCULU).get(0);
 			Sequence xenopus = fileParser.parseFile(XENOPUS_LAEVIS).get(0);
-			aligner2 = new NWAligner2(mus, xenopus, subMatrix);
+			aligner2 = new NWAligner(mus, xenopus, subMatrix);
 			System.out.println(aligner2);
 		}
 	}

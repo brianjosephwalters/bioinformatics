@@ -1,56 +1,62 @@
 package bio.models;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
-//TODO: first column problem
+
 public class NWAligner {
 	private Sequence alpha;
 	private Sequence beta;
-	private int gapWeight;
-	private Hashtable<String, Hashtable<String, Integer>> subMatrix;
+	private SubstitutionMatrix<Integer> subMatrix;
 	
 	private ArrayList<ArrayList<NWCell>> matrix;
 	
-	public NWAligner (Sequence alpha, 
-					  Sequence beta,
-					  int gapWeight,
-					  Hashtable<String, Hashtable<String, Integer>> subMatrix) {
+	public NWAligner (Sequence alpha,
+			           Sequence beta,
+			           SubstitutionMatrix<Integer> subMatrix) {
 		this.alpha = alpha;
 		this.beta = beta;
-		this.gapWeight = gapWeight;
 		this.subMatrix = subMatrix;
-		
-		for (int a = 0; a < alpha.getSequence().length(); a++) {
+
+		this.matrix = new ArrayList<ArrayList<NWCell>>();
+		for (int a = 0; a < alpha.getSequence().length() + 1; a++) {
 			this.matrix.add(new ArrayList<NWCell>());
-			for (int b = 0; b < beta.getSequence().length(); b++) {
-				String alphaValue = String.valueOf(alpha.getSequence().charAt(a));
-				String betaValue = String.valueOf(beta.getSequence().charAt(b));
+			for (int b = 0; b < beta.getSequence().length() + 1; b++) {
+				String alphaValue = "0";
+				if (a == 0) {
+					alphaValue = String.valueOf(alpha.getSequence().charAt(a));
+				}
+				String betaValue = "0";
+				if (b == 0) {
+					betaValue = String.valueOf(beta.getSequence().charAt(b));
+				}
 				this.matrix.get(a).add(new NWCell(alphaValue, betaValue));
 			}
-		}	
+		}
+		
+		initializeEdges();
+		fillMatrix();	
 	}
 	
 	private void initializeEdges() {
-		for (int a = 0; a < alpha.getSequence().length(); a++) {
-			matrix.get(a).get(0).setScore(-gapWeight * a);
+		for (int a = 0; a < alpha.getSequence().length() + 1; a++) {
+			matrix.get(a).get(0).setScore(-subMatrix.getGapWeight() * a);
 		}
-		for (int b = 0; b < beta.getSequence().length(); b++) {
-			matrix.get(0).get(b).setScore(-gapWeight * b);
+		for (int b = 0; b < beta.getSequence().length() + 1; b++) {
+			matrix.get(0).get(b).setScore(-subMatrix.getGapWeight() * b);
 		}
 	}
 	
 	private void fillMatrix() {
-		for (int a = 1; a < alpha.getSequence().length(); a++) {
-			for (int b = 1; b < beta.getSequence().length(); b++) {
-				String aChar = String.valueOf(alpha.getSequence().charAt(a));
-				String bChar = String.valueOf(beta.getSequence().charAt(b));
+		for (int a = 1; a < alpha.getSequence().length() + 1; a++) {
+			for (int b = 1; b < beta.getSequence().length() + 1; b++) {
+				String aChar = String.valueOf(alpha.getSequence().charAt(a - 1));
+				String bChar = String.valueOf(beta.getSequence().charAt(b - 1));
 				int aPrev = matrix.get(a-1).get(b).getScore();
 				int bPrev = matrix.get(a).get(b-1).getScore();
 				int diaPrev = matrix.get(a-1).get(b-1).getScore();
 				
-				int match = diaPrev + subMatrix.get(aChar).get(bChar);
-				int delete = aPrev + -gapWeight;
-				int insert = bPrev + -gapWeight;
+				int match = diaPrev + subMatrix.get(aChar, bChar);
+				int delete = aPrev + -subMatrix.getGapWeight();
+				int insert = bPrev + -subMatrix.getGapWeight();
 				
 				if (match > delete && match > insert) {
 					matrix.get(a).get(b).setScore(match);
@@ -68,13 +74,12 @@ public class NWAligner {
 	
 	public String toString() {
 		StringBuilder results = new StringBuilder();
-		for (int a = 0; a < alpha.getSequence().length(); a++) {
-			for (int b = 0; b < beta.getSequence().length(); b++) {
+		for (int a = 0; a < alpha.getSequence().length() + 1; a++) {
+			for (int b = 0; b < beta.getSequence().length() + 1; b++) {
 				results.append(matrix.get(a).get(b) + ", ");
 			}
 			results.append("\n");
 		}
 		return results.toString();
 	}
-	
 }
