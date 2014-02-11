@@ -10,8 +10,11 @@ import org.apache.commons.lang3.StringUtils;
 import bio.controllers.ChunkParser;
 import bio.controllers.FileParser;
 import bio.controllers.Reporter;
+import bio.controllers.SubstitutionMatrixParser;
 import bio.models.Analyzer;
+import bio.models.NWAligner2;
 import bio.models.Sequence;
+import bio.models.SubstitutionMatrix;
 
 /**
  * A TUI for loading FASTA files, determining whether sequences are DNA, RNA or a Protein,
@@ -46,10 +49,15 @@ public class BioTUI {
 	public static final String NICOTIANA_RESULTS_MEDIUM = "results\\Nicotiana tabacum results medium.txt";
 	public static final String NICOTIANA_RESULTS_FULL = "C:\\Users\\bjw\\Bio Data\\Nicotiana tabacum results.txt";
 	
+	public static final String MUS_MUSCULU = "data\\Mus musculu.fasta";
+	public static final String XENOPUS_LAEVIS = "data\\Xenopus laevis.fasta";
+	public static final String BLOSUM50 = "data\\BLOSUM50.txt";
+	
 	Scanner scanner;			// Used to receive user input.
 	FileParser fileParser;      // Used to parse entire files.
 	ChunkParser chunkParser;    // Used to parse chunks of files.
 	Analyzer analyzer;          // Provides methods for analyzing sequences.
+	NWAligner2 aligner2;
 	
 	/**
 	 * Creates an instance of the TUI.
@@ -179,6 +187,17 @@ public class BioTUI {
 		}
 		return aggregateData;
 	}
+	
+	/**
+	 * Display the menu for performing sequence alignments.
+	 */
+	
+	public void displayAlignmentMenu() {
+		System.out.println("---------------------Alignments-------------------");
+		System.out.println("Test Sequences...................................1");
+		System.out.println("Align Mus musculu and Xenopus laevis sequences...2");
+		System.out.println("Back.............................................0");
+	}
 		
 	/**
 	 * Displays the menu for working with Vitis vinifera.
@@ -217,6 +236,7 @@ public class BioTUI {
 		System.out.println("----------------------Main Menu------------------------");
 		System.out.println("Calculate frequencies for Vitis vinifera............. 1");
 		System.out.println("Calculate frequencies for Nicotiana tabacum.......... 2");
+		System.out.println("Produce Alignments................................... 3");
 		// TODO: Implement single file options.
 		//System.out.println("Calculate frequencies from FASTA file................10");
 		System.out.println("Exit................................................. 0");
@@ -303,6 +323,32 @@ public class BioTUI {
 	}
 	
 	/**
+	 * Menu to select sequences on which to perform alignments.
+	 * @param choice	the user's choice
+	 */
+	public void performChoiceAlignment(int choice) {
+		if (choice == 1) {
+			SubstitutionMatrixParser parser = new SubstitutionMatrixParser(BLOSUM50);
+			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix2();
+			subMatrix.setGapWeight(8);
+			Sequence alpha = new Sequence();
+			alpha.appendSequence("HEAGAWGHEE");
+			Sequence beta = new Sequence();
+			beta.appendSequence("PAWHEAE");
+			aligner2 = new NWAligner2(alpha, beta, subMatrix);
+			System.out.println(aligner2);
+		}
+		else if (choice == 2) {
+			SubstitutionMatrixParser parser = new SubstitutionMatrixParser(BLOSUM50);
+			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix2();
+			Sequence mus = fileParser.parseFile(MUS_MUSCULU).get(0);
+			Sequence xenopus = fileParser.parseFile(XENOPUS_LAEVIS).get(0);
+			aligner2 = new NWAligner2(mus, xenopus, subMatrix);
+			System.out.println(aligner2);
+		}
+	}
+	
+	/**
 	 * Allows the user to provide an input FASTA file and an output file name
 	 *  and then calculates the totals and frequencies for the FASTA file.
 	 *  TODO: Needs to be implemented
@@ -334,6 +380,13 @@ public class BioTUI {
 				performChoiceNicotiana(subchoice);
 			}
 		} else if (choice == 3) {
+			int subchoice = -1;
+			while (subchoice != 0) {
+				displayAlignmentMenu();
+				subchoice = scanner.nextInt();
+				performChoiceAlignment(subchoice);
+			}
+		} else if (choice == 10) {
 			performChoiceFasta();
 		}
 	}
