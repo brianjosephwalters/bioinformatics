@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.util.Hashtable;
 import java.util.List;
 
+import bio.models.Sequence;
+
 /**
  * Produces a report on the total number of acids and the
  * frequency of those acids for a set of Sequences.
@@ -35,7 +37,7 @@ public class Reporter {
 	 *                      amino and nucleic acids
 	 * @param reportTitle   the title of the report
 	 */
-	public void createReport(List<Hashtable<String, Integer>> totals, 
+	public void createFrequencyReport(List<Hashtable<String, Integer>> totals, 
 							 List<Hashtable<String, Double>> frequencies,
 							 String reportTitle) {
 		pw.println(reportTitle);
@@ -48,6 +50,14 @@ public class Reporter {
 		pw.println("  Amino Acids:");
 		for (String key : totals.get(1).keySet()) {
 			pw.println("  " + key + ": " + totals.get(1).get(key) + ", " + frequencies.get(1).get(key));
+		}
+		pw.println("\n");
+		pw.flush();
+	}
+	
+	public void createSequenceAlignmentReport(List<Sequence> list) {
+		for (Sequence seq : list) {
+			pw.println(seq.getSequence());
 		}
 		pw.println("\n");
 		pw.flush();

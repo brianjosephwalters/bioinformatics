@@ -114,10 +114,19 @@ public class Sequence {
 	
 	/**
 	 * Appends acid codes to the series of acid codes in this Sequence.
-	 * @param seq
+	 * @param seq	a string of acid codes
 	 */
 	public void appendSequence(String seq) {
 		this.sequence.append(seq);
+	}
+	
+	/**
+	 * Prepends acid codes to the series of acid codes in this Sequence.
+	 * @param seq	a string of acid codes
+	 */
+	
+	public void prependSequence(String seq) {
+		this.sequence.insert(0, seq);
 	}
 	
 	/**

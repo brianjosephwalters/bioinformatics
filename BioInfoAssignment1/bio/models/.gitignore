@@ -4,3 +4,6 @@
 /NWCell.class
 /SubstitutionMatrix.class
 /NWAligner2.class
+/AlignmentMatrix.class
+/NWMatrix.class
+/ArrayMatrix.class

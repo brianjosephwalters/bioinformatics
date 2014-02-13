@@ -1,4 +1,4 @@
-package bio.view;
+package bio.views;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -51,13 +51,17 @@ public class BioTUI {
 	
 	public static final String MUS_MUSCULU = "data\\Mus musculu.fasta";
 	public static final String XENOPUS_LAEVIS = "data\\Xenopus laevis.fasta";
+	public static final String MUS_XENOPUS_ALIGNMENT = "data\\Mus Xenopus alignment.txt";
+	public static final String HYPHANTRIA_CUNEA = "data\\Hyphantria cunea stat.fasta";
+	public static final String ANOPHELES_GAMBIAE = "data\\Anopheles gambiae stat.fasta";
+	public static final String HYPHANTRIA_ANOPHELES_ALIGNMENT = "data\\Hyphantria Anopheles alignment.txt";
 	public static final String BLOSUM50 = "data\\BLOSUM50.txt";
 	
 	Scanner scanner;			// Used to receive user input.
 	FileParser fileParser;      // Used to parse entire files.
 	ChunkParser chunkParser;    // Used to parse chunks of files.
 	Analyzer analyzer;          // Provides methods for analyzing sequences.
-	NWAligner aligner2;
+	NWAligner aligner;
 	
 	/**
 	 * Creates an instance of the TUI.
@@ -75,15 +79,22 @@ public class BioTUI {
 	 * @param frequencies   the frequency of each acid
 	 * @param filename      the name of the file to store the results
 	 */
-	public void saveResults(List<Hashtable<String, Integer>> totals, 
+	public void saveFrequencyStatistics(List<Hashtable<String, Integer>> totals, 
 							List<Hashtable<String, Double>> frequencies,
 							String filename) {
 		// Prepare a report file.
 		Reporter reporter = new Reporter(filename);
 		// Write total and frequencies to the report file.  
 		// The report name is constructed from the provided file name.
-		reporter.createReport(totals, frequencies,
+		reporter.createFrequencyReport(totals, frequencies,
 							  StringUtils.substringAfterLast(StringUtils.substringBeforeLast(filename, "."), "\\"));
+		reporter.close();
+	}
+	
+	public void saveSequenceAlignment(ArrayList<Sequence> list, String filename) {
+		Reporter reporter = new Reporter(filename);
+		reporter.createSequenceAlignmentReport(list);
+		reporter.close();
 	}
 	
 	/**
@@ -124,6 +135,12 @@ public class BioTUI {
 			System.out.println("  " + key + ": " + totals.get(1).get(key));
 		}
 		System.out.println("\n");
+	}
+	
+	public void displaySequenceAlignment(List<Sequence> list) {
+		for (Sequence seq : list) {
+			System.out.println(seq.getSequence());
+		}
 	}
 	
 	/**
@@ -191,12 +208,12 @@ public class BioTUI {
 	/**
 	 * Display the menu for performing sequence alignments.
 	 */
-	
 	public void displayAlignmentMenu() {
-		System.out.println("---------------------Alignments-------------------");
-		System.out.println("Test Sequences...................................1");
-		System.out.println("Align Mus musculu and Xenopus laevis sequences...2");
-		System.out.println("Back.............................................0");
+		System.out.println("-----------------------Alignments-------------------");
+		System.out.println("Test Sequences.....................................1");
+		System.out.println("Align Mus musculu and Xenopus laevis sequences.....2");
+		System.out.println("Anopheles gambiae and Hyphantria cunea sequences...3");
+		System.out.println("Back...............................................0");
 	}
 		
 	/**
@@ -254,31 +271,31 @@ public class BioTUI {
 			displayTotals(totals);
 			frequencies = analyzer.calculateFrequencies(totals);
 			displayFrequencies(frequencies);
-			saveResults(totals, frequencies, VITIS_RESULTS_TEST);
+			saveFrequencyStatistics(totals, frequencies, VITIS_RESULTS_TEST);
 		} else if (choice == 2) {
 			totals = reportEntireSample(VITIS_DNA_MEDIUM, VITIS_PROTEIN_MEDIUM);
 			displayTotals(totals);
 			frequencies = analyzer.calculateFrequencies(totals);
 			displayFrequencies(frequencies);
-			saveResults(totals, frequencies, VITIS_RESULTS_MEDIUM);
+			saveFrequencyStatistics(totals, frequencies, VITIS_RESULTS_MEDIUM);
 		} else if (choice == 3) {
 			totals = reportEntireSampleByChunking(VITIS_DNA_MEDIUM, VITIS_PROTEIN_MEDIUM);
 			displayTotals(totals);
 			frequencies = analyzer.calculateFrequencies(totals);
 			displayFrequencies(frequencies);
-			saveResults(totals, frequencies, VITIS_RESULTS_MEDIUM);
+			saveFrequencyStatistics(totals, frequencies, VITIS_RESULTS_MEDIUM);
 		} else if (choice == 4) {
 			totals = reportEntireSample(VITIS_DNA_FULL, VITIS_PROTEIN_FULL);
 			displayTotals(totals);
 			frequencies = analyzer.calculateFrequencies(totals);
 			displayFrequencies(frequencies);
-			saveResults(totals, frequencies, VITIS_RESULTS_FULL);
+			saveFrequencyStatistics(totals, frequencies, VITIS_RESULTS_FULL);
 		} else if (choice == 5) {
 			totals = reportEntireSampleByChunking(VITIS_DNA_FULL, VITIS_PROTEIN_FULL);
 			displayTotals(totals);
 			frequencies = analyzer.calculateFrequencies(totals);
 			displayFrequencies(frequencies);
-			saveResults(totals, frequencies, VITIS_RESULTS_FULL);
+			saveFrequencyStatistics(totals, frequencies, VITIS_RESULTS_FULL);
 		}
 	}
 	
@@ -294,31 +311,31 @@ public class BioTUI {
 			displayTotals(totals);
 			frequencies = analyzer.calculateFrequencies(totals);
 			displayFrequencies(frequencies);
-			saveResults(totals, frequencies, NICOTIANA_RESULTS_TEST);
+			saveFrequencyStatistics(totals, frequencies, NICOTIANA_RESULTS_TEST);
 		} else if (choice == 2) {
 			totals = reportEntireSample(NICOTIANA_DNA_MEDIUM, NICOTIANA_PROTEIN_MEDIUM);
 			displayTotals(totals);
 			frequencies = analyzer.calculateFrequencies(totals);
 			displayFrequencies(frequencies);
-			saveResults(totals, frequencies, NICOTIANA_RESULTS_MEDIUM);
+			saveFrequencyStatistics(totals, frequencies, NICOTIANA_RESULTS_MEDIUM);
 		} else if (choice == 3) {
 			totals = reportEntireSampleByChunking(NICOTIANA_DNA_MEDIUM, NICOTIANA_PROTEIN_MEDIUM);
 			displayTotals(totals);
 			frequencies = analyzer.calculateFrequencies(totals);
 			displayFrequencies(frequencies);
-			saveResults(totals, frequencies, NICOTIANA_RESULTS_MEDIUM);
+			saveFrequencyStatistics(totals, frequencies, NICOTIANA_RESULTS_MEDIUM);
 		} else if (choice == 4) {
 			totals = reportEntireSample(NICOTIANA_DNA_FULL, NICOTIANA_PROTEIN_FULL);
 			displayTotals(totals);
 			frequencies = analyzer.calculateFrequencies(totals);
 			displayFrequencies(frequencies);
-			saveResults(totals, frequencies, NICOTIANA_RESULTS_FULL);
+			saveFrequencyStatistics(totals, frequencies, NICOTIANA_RESULTS_FULL);
 		} else if (choice == 5) {
 			totals = reportEntireSampleByChunking(NICOTIANA_DNA_FULL, NICOTIANA_PROTEIN_FULL);
 			displayTotals(totals);
 			frequencies = analyzer.calculateFrequencies(totals);
 			displayFrequencies(frequencies);
-			saveResults(totals, frequencies, NICOTIANA_RESULTS_FULL);
+			saveFrequencyStatistics(totals, frequencies, NICOTIANA_RESULTS_FULL);
 		}
 	}
 	
@@ -332,19 +349,35 @@ public class BioTUI {
 			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix2();
 			subMatrix.setGapWeight(8);
 			Sequence alpha = new Sequence();
-			alpha.appendSequence("HEAGAWGHEE");
+			alpha.appendSequence("PAWHEAE");
 			Sequence beta = new Sequence();
-			beta.appendSequence("PAWHEAE");
-			aligner2 = new NWAligner(alpha, beta, subMatrix);
-			System.out.println(aligner2);
+			beta.appendSequence("HEAGAWGHEE");
+			aligner = new NWAligner(alpha, beta, subMatrix);
+			System.out.println(aligner);
+			ArrayList<Sequence> alignedSequences = aligner.getAlignment();
+			displaySequenceAlignment(alignedSequences);
 		}
 		else if (choice == 2) {
 			SubstitutionMatrixParser parser = new SubstitutionMatrixParser(BLOSUM50);
 			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix2();
+			subMatrix.setGapWeight(8);
 			Sequence mus = fileParser.parseFile(MUS_MUSCULU).get(0);
 			Sequence xenopus = fileParser.parseFile(XENOPUS_LAEVIS).get(0);
-			aligner2 = new NWAligner(mus, xenopus, subMatrix);
-			System.out.println(aligner2);
+			aligner = new NWAligner(mus, xenopus, subMatrix);
+			ArrayList<Sequence> alignedSequences = aligner.getAlignment();
+			displaySequenceAlignment(alignedSequences);
+			saveSequenceAlignment(alignedSequences, MUS_XENOPUS_ALIGNMENT);
+		}
+		else if (choice == 3) {
+			SubstitutionMatrixParser parser = new SubstitutionMatrixParser(BLOSUM50);
+			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix2();
+			subMatrix.setGapWeight(8);
+			Sequence mus = fileParser.parseFile(HYPHANTRIA_CUNEA).get(0);
+			Sequence xenopus = fileParser.parseFile(ANOPHELES_GAMBIAE).get(0);
+			aligner = new NWAligner(mus, xenopus, subMatrix);
+			ArrayList<Sequence> alignedSequences = aligner.getAlignment();
+			displaySequenceAlignment(alignedSequences);
+			saveSequenceAlignment(alignedSequences, HYPHANTRIA_ANOPHELES_ALIGNMENT);
 		}
 	}
 	

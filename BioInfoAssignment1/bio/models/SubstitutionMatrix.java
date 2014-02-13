@@ -2,7 +2,6 @@ package bio.models;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Set;
 
 public class SubstitutionMatrix<Element> {
 	int gapWeight;

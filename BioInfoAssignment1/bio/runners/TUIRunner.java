@@ -1,6 +1,6 @@
 package bio.runners;
 
-import bio.view.BioTUI;
+import bio.views.BioTUI;
 
 /**
  * Runs a program which loads, parses, and analyzes FASTA files.
