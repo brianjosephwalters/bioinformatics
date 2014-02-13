@@ -52,9 +52,11 @@ public class BioTUI {
 	public static final String MUS_MUSCULU = "data\\Mus musculu.fasta";
 	public static final String XENOPUS_LAEVIS = "data\\Xenopus laevis.fasta";
 	public static final String MUS_XENOPUS_ALIGNMENT = "data\\Mus Xenopus alignment.txt";
+	
 	public static final String HYPHANTRIA_CUNEA = "data\\Hyphantria cunea stat.fasta";
 	public static final String ANOPHELES_GAMBIAE = "data\\Anopheles gambiae stat.fasta";
 	public static final String HYPHANTRIA_ANOPHELES_ALIGNMENT = "data\\Hyphantria Anopheles alignment.txt";
+	
 	public static final String BLOSUM50 = "data\\BLOSUM50.txt";
 	
 	Scanner scanner;			// Used to receive user input.
