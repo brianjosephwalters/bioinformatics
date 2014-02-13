@@ -75,7 +75,7 @@ public class BioTUI {
 	}
 	
 	/**
-	 * Prepares the writing of the results (total number of acids and their frequencies)
+	 * Writes of the results (total number of acids and their frequencies)
 	 * to a file.
 	 * @param totals        the count of each acid
 	 * @param frequencies   the frequency of each acid
@@ -93,6 +93,11 @@ public class BioTUI {
 		reporter.close();
 	}
 	
+	/**
+	 * Writes the aligned sequences to a file.
+	 * @param list			a list of aligned sequences
+	 * @param filename		the name of the file to store the sequences
+	 */
 	public void saveSequenceAlignment(ArrayList<Sequence> list, String filename) {
 		Reporter reporter = new Reporter(filename);
 		reporter.createSequenceAlignmentReport(list);
@@ -139,6 +144,10 @@ public class BioTUI {
 		System.out.println("\n");
 	}
 	
+	/**
+	 * Displays the aligned sequences to the screen.
+	 * @param list		a list of aligned sequences
+	 */
 	public void displaySequenceAlignment(List<Sequence> list) {
 		for (Sequence seq : list) {
 			System.out.println(seq.getSequence());
@@ -348,7 +357,7 @@ public class BioTUI {
 	public void performChoiceAlignment(int choice) {
 		if (choice == 1) {
 			SubstitutionMatrixParser parser = new SubstitutionMatrixParser(BLOSUM50);
-			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix2();
+			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix();
 			subMatrix.setGapWeight(8);
 			Sequence alpha = new Sequence();
 			alpha.appendSequence("PAWHEAE");
@@ -361,7 +370,7 @@ public class BioTUI {
 		}
 		else if (choice == 2) {
 			SubstitutionMatrixParser parser = new SubstitutionMatrixParser(BLOSUM50);
-			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix2();
+			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix();
 			subMatrix.setGapWeight(8);
 			Sequence mus = fileParser.parseFile(MUS_MUSCULU).get(0);
 			Sequence xenopus = fileParser.parseFile(XENOPUS_LAEVIS).get(0);
@@ -372,7 +381,7 @@ public class BioTUI {
 		}
 		else if (choice == 3) {
 			SubstitutionMatrixParser parser = new SubstitutionMatrixParser(BLOSUM50);
-			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix2();
+			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix();
 			subMatrix.setGapWeight(8);
 			Sequence mus = fileParser.parseFile(HYPHANTRIA_CUNEA).get(0);
 			Sequence xenopus = fileParser.parseFile(ANOPHELES_GAMBIAE).get(0);

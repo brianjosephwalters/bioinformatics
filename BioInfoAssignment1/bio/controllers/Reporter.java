@@ -55,6 +55,14 @@ public class Reporter {
 		pw.flush();
 	}
 	
+	/**
+	 * Writes two aligned sequences to a file.
+	 * @param totals		the totals for each acid code for both
+	 *                      amino and nucleic acids
+	 * @param frequencies   the frequencies for each acid code for both
+	 *                      amino and nucleic acids
+	 * @param reportTitle   the title of the report
+	 */
 	public void createSequenceAlignmentReport(List<Sequence> list) {
 		for (Sequence seq : list) {
 			pw.println(seq.getSequence());
