@@ -3,7 +3,7 @@ package bio.views;
 import java.util.Hashtable;
 import java.util.List;
 
-import bio.models.Analyzer;
+import bio.models.SequenceAnalyzer;
 
 /**
  * A menu for working with FASTA files for Vitis vinifera.
@@ -43,7 +43,7 @@ public class VitisMenu extends AbstractSequenceView {
 	 * {@inheritDoc}
 	 */
 	protected void performChoice(int choice) {
-		Analyzer analyzer = new Analyzer();
+		SequenceAnalyzer analyzer = new SequenceAnalyzer();
 		List<Hashtable<String,Integer>> totals;
 		List<Hashtable<String,Double>> frequencies;
 		if (choice == 1) {

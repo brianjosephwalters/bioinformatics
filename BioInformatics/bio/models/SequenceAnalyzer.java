@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Brian J. Walters
  *
  */
-public class Analyzer {
+public class SequenceAnalyzer {
 	// Codes used by the FASTA file format.
 	public static final String nucleicAcidCodes = "ACGTURYKMSWBDHVNX-";
 	public static final String aminoAcidCodes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ-*";

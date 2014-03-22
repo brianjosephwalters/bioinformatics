@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import bio.controllers.ChunkParser;
 import bio.controllers.FileParser;
 import bio.controllers.Reporter;
-import bio.models.Analyzer;
+import bio.models.SequenceAnalyzer;
 import bio.models.Sequence;
 
 public abstract class AbstractSequenceView extends AbstractView {
@@ -21,7 +21,7 @@ public abstract class AbstractSequenceView extends AbstractView {
 	 */
 	protected List<Hashtable<String,Integer>> reportEntireSample(String... files) {
 		FileParser fileParser = new FileParser();
-		Analyzer analyzer = new Analyzer();
+		SequenceAnalyzer analyzer = new SequenceAnalyzer();
 		List<Sequence> list = new ArrayList<Sequence>();
 		// For every provided file...
 		for (String file : files) {
@@ -47,7 +47,7 @@ public abstract class AbstractSequenceView extends AbstractView {
 	 * @return         a list containing separate totals for nucleic and amino acids.  
 	 */
 	protected List<Hashtable<String,Integer>> reportEntireSampleByChunking(String... files) {
-		Analyzer analyzer = new Analyzer();
+		SequenceAnalyzer analyzer = new SequenceAnalyzer();
 		// Prepare our data structure.
 		List<Hashtable<String, Integer>> aggregateData = new ArrayList<Hashtable<String,Integer>>();
 		aggregateData.add(new Hashtable<String, Integer>());
