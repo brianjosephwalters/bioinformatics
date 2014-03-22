@@ -46,8 +46,7 @@ public class FileParser {
 			// If the line is empty, then we have reached
 			// the end of a sequence...
 			else if (line.isEmpty() || 
-					 line.charAt(0) == '\n' ||
-					 !scanner.hasNextLine()) {
+					 line.charAt(0) == '\n') {
 				// so add it to the list.
 				list.add(sequence);
 			}
@@ -58,6 +57,7 @@ public class FileParser {
 				sequence.appendSequence(line);
 			}
 		}
+		list.add(sequence);
 		// Close the file and return the list.
 		scanner.close();
 		return list;
