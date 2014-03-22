@@ -3,6 +3,7 @@ package bio.models;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.List;
 
 public class HMMFactory {
 	public HMM createCasinoHMM() {
@@ -11,6 +12,23 @@ public class HMMFactory {
 		Double[][] emissionProb = new Double[][] { {1/6.0, 1/6.0, 1/6.0, 1/6.0, 1/6.0, 1/6.0},
 		           								   {1/10.0, 1/10.0, 1/10.0, 1/10.0, 1/10.0, 1/2.0} };
 		Double[][] transitionProb = new Double[][] { {.95, .05}, {.10, .90} };
+		
+		Hashtable<String, Double> beginStates = new Hashtable<String, Double>();
+		beginStates.put("F", .95);
+		beginStates.put("L", .05);
+		
+		Hashtable<String, Double> endStates = new Hashtable<String, Double>();
+		endStates.put("F", .95);
+		endStates.put("L", .05);
+		
+		return new HMM(emissions, states, emissionProb, transitionProb, beginStates, endStates);
+	}
+	
+	public HMM createCasinoHMM(Double[][] transitionProb) {
+		ArrayList<String> emissions = new ArrayList<String>(Arrays.asList("1", "2", "3", "4", "5", "6"));
+		ArrayList<String> states = new ArrayList<String>(Arrays.asList("F", "L"));
+		Double[][] emissionProb = new Double[][] { {1/6.0, 1/6.0, 1/6.0, 1/6.0, 1/6.0, 1/6.0},
+		           								   {1/10.0, 1/10.0, 1/10.0, 1/10.0, 1/10.0, 1/2.0} };
 		
 		Hashtable<String, Double> beginStates = new Hashtable<String, Double>();
 		beginStates.put("F", .95);
@@ -70,14 +88,56 @@ public class HMMFactory {
 	
 	public void addWeatherTestSequence(HMM hmm) {
 		hmm.setEmissionSequence(Arrays.asList("See Umbrella",
-				   "See Umbrella",
-				   "See No Umbrella",
-				   "See Umbrella",
-				   "See Umbrella"));
+											  "See Umbrella",
+											  "See No Umbrella",
+											  "See Umbrella",
+											  "See Umbrella"));
 		hmm.setStateSequence(Arrays.asList("Rain",
-		             "Rain",
-		             "No Rain",
-		             "Rain",
-		             "Rain"));
+								           "Rain",
+								           "No Rain",
+								           "Rain",
+								           "Rain"));
+	}
+	
+	public void runTest() {
+		Double[] transitionProbabilities = {.01, .02, .03, .04, .05, .06, .07, .08, .09, .10,
+				                            .11, .12, .13, .14, .15, .16, .17, .18, .19, .20};
+		for (int i = 0; i < transitionProbabilities.length; i++) {
+			System.out.println("Transition Probability: " + transitionProbabilities[i]);
+			List<Double> viterbiRuns = new ArrayList<Double>();
+			List<Double> posteriorRuns = new ArrayList<Double>();
+			for (int j = 0; j < 10; j++) {
+				Double[][] transProb = { {1-transitionProbabilities[i], transitionProbabilities[i]},
+						                 {.10, .9} };
+				HMM hmm = createCasinoHMM(transProb);
+				HMMSequenceCreator.createSequenceFromHMM(hmm, 1000);
+				List<String> viterbi = HMMAnalyzer.viterbi(hmm);
+				List<String> posterior = HMMAnalyzer.posteriorScaled(hmm);
+				Double viterbiPerformance = HMMAnalyzer
+						.compareStateSequences(hmm.getStateSequence(), viterbi);
+				Double posteriorPerformance = HMMAnalyzer
+						.compareStateSequences(hmm.getStateSequence(), posterior);
+				viterbiRuns.add(viterbiPerformance);
+				posteriorRuns.add(posteriorPerformance);
+			}
+			
+			Double viterbiAverage = 0.0;
+			for (Double value : viterbiRuns) {
+				viterbiAverage += value;
+			}
+			viterbiAverage = viterbiAverage / viterbiRuns.size();
+			
+			Double posteriorAverage = 0.0;
+			for (Double value : posteriorRuns) {
+				posteriorAverage += value;
+			}
+			posteriorAverage = posteriorAverage / posteriorRuns.size();
+			
+			System.out.println("Vertbi %error: " + viterbiRuns);
+			System.out.println("  Average: " + viterbiAverage);
+			System.out.println("Posterior %error: " + posteriorRuns);
+			System.out.println("  Average: " + posteriorAverage);
+			System.out.println(); 
+		}
 	}
 }

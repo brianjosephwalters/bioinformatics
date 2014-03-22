@@ -6,26 +6,33 @@ import java.util.List;
 import java.util.Random;
 
 public class HMMSequenceCreator {
-		
+	
+	/**
+	 * Creates a sequence of emissions and states producing those emissions
+	 * using the Hidden Markov Model provided.  The results are added to the
+	 * Hidden Markov Model.
+	 * @param hmm			a Hidden Markov Model
+	 * @param entries		the number of emissions to produce
+	 */
 	public static void createSequenceFromHMM(HMM hmm, int entries) {
-		List<String> emissionSequence = new ArrayList<String>();
-		List<String> stateSequence = new ArrayList<String>();
-		Random r = new Random();
-		Double randomDouble = r.nextDouble();
+		List<String> emissionSequence = new ArrayList<String>();	// The resulting emissions
+		List<String> stateSequence = new ArrayList<String>();		// The resulting states
+		Random r = new Random();									// A random number generator
 
 		// Get Beginning State
-			List<String> keys = new ArrayList<String>();
-			List<Double> values = new ArrayList<Double>();
-			for (String key: hmm.getBeginState().keySet()) {
-				keys.add(key);
-				values.add(hmm.getBeginState().get(key));
-			}
-			int stateIndex = rouletteWheel(values, r.nextDouble());
-			String state = keys.get(stateIndex);
+		List<String> keys = new ArrayList<String>();
+		List<Double> values = new ArrayList<Double>();
+		for (String key: hmm.getBeginState().keySet()) {
+			keys.add(key);
+			values.add(hmm.getBeginState().get(key));
+		}
+		int stateIndex = rouletteWheel(values, r.nextDouble());
+		String state = keys.get(stateIndex);
 			
 		// Create Entries
+		Hashtable<String, Double> transitions = hmm.getStateTransitionProbabilities(state);
+		Hashtable<String, Double> emissions = hmm.getEmissionProbabilities(state);
 		for (int index = 0; index < entries; index++) {
-			Hashtable<String, Double> transitions = hmm.getStateTransitionProbabilities(state);
 			List<String> keys2 = new ArrayList<String>();
 			List<Double> values2 = new ArrayList<Double>();
 			for (String key: transitions.keySet()) {
@@ -35,7 +42,6 @@ public class HMMSequenceCreator {
 			stateIndex = rouletteWheel(values2, r.nextDouble());
 			state = keys2.get(stateIndex);
 			
-			Hashtable<String, Double> emissions = hmm.getEmissionProbabilities(state);
 			List<String> keys3 = new ArrayList<String>();
 			List<Double> values3 = new ArrayList<Double>();
 			for (String key: emissions.keySet()) {
@@ -49,8 +55,8 @@ public class HMMSequenceCreator {
 			stateSequence.add(state);
 		}
 		// Set results in HMM
-		hmm.setEmissions(emissionSequence);
-		hmm.setStates(stateSequence);
+		hmm.setEmissionSequence(emissionSequence);
+		hmm.setStateSequence(stateSequence);
 	}
 	
 	

@@ -104,7 +104,7 @@ public class HMMAnalyzer {
 			}
 		}
 		
-		System.out.println(probTotals);
+		//System.out.println(probTotals);
 		return probTotals;
 	}
 	
@@ -137,7 +137,7 @@ public class HMMAnalyzer {
 				probTotals.get(state).add(0, totalProb);
 			}
 		}
-		System.out.println(probTotals);
+		//System.out.println(probTotals);
 		return probTotals;
 	}
 	
@@ -149,13 +149,13 @@ public class HMMAnalyzer {
 		for (String state : hmm.getStates()) {
 			forwardResult +=  forward.get(state).get(index) + Math.log(hmm.getEndState().get(state));
 		}
-		System.out.println("Forward Result: " + forwardResult);
+		//System.out.println("Forward Result: " + forwardResult);
 		
 		Double backwardResult = 0.0;
 		for (String state : hmm.getStates()) {
 			backwardResult += backward.get(state).get(0) + Math.log(hmm.getBeginState().get(state));
 		}
-		System.out.println("Backward Result: " + backwardResult);
+		//System.out.println("Backward Result: " + backwardResult);
 		
 		for (String state : hmm.getStates()) {
 			Double forwardProbability = 0.0;
@@ -163,9 +163,9 @@ public class HMMAnalyzer {
 
 			forwardProbability = forward.get(state).get(index);
 			backwardProbability = backward.get(state).get(0);
-			System.out.println("Probabilities of " + state + 
-					           " at index " + index + ": " + 
-					           forwardProbability + ", " + backwardProbability);
+//			System.out.println("Probabilities of " + state + 
+//					           " at index " + index + ": " + 
+//					           forwardProbability + ", " + backwardProbability);
 
 		}
 	}
@@ -229,7 +229,7 @@ public class HMMAnalyzer {
 			Double endStateProb = hmm.getEndState().get(state);
 			total += lastStateProb * endStateProb;
 		}
-		System.out.println ("Forward Termination, P(x): " + total);
+		//System.out.println ("Forward Termination, P(x): " + total);
 		
 		return stateProbs;
 	}
@@ -278,26 +278,26 @@ public class HMMAnalyzer {
 			Double beginStateProb = hmm.getBeginState().get(state);
 			total += firstStateProb * firstEmissionProb * beginStateProb;
 		}
-		System.out.println ("Backward Termination, P(x): " + total);
+		//System.out.println ("Backward Termination, P(x): " + total);
 		
 		return stateProbs;
 	}
 	
-	public static ArrayList<String> posteriorScaled(HMM hmm) {
+	public static List<String> posteriorScaled(HMM hmm) {
 		ArrayList<Double> scale = new ArrayList<Double>();
 		// Forward Algorithm
 		Hashtable<String, ArrayList<Double>> forward = forwardScaled(hmm, scale);
-		System.out.println("Forward probTotals:");
-		for (String state : hmm.getStates()) {
-			System.out.println(state + "(" +forward.get(state).size() + "): " + forward.get(state));
-		}
+//		System.out.println("Forward probTotals:");
+//		for (String state : hmm.getStates()) {
+//			System.out.println(state + "(" +forward.get(state).size() + "): " + forward.get(state));
+//		}
 				
 		// Backwards Algorithm
 		Hashtable<String, ArrayList<Double>> backward = backwardScaled(hmm, scale);
-		System.out.println("Backward probTotals:");
-		for (String state : hmm.getStates()) {
-			System.out.println(state + "(" +backward.get(state).size() + "): " + backward.get(state));
-		}
+//		System.out.println("Backward probTotals:");
+//		for (String state : hmm.getStates()) {
+//			System.out.println(state + "(" +backward.get(state).size() + "): " + backward.get(state));
+//		}
 		
 		
 		// Posterior State Probabilities
@@ -314,10 +314,10 @@ public class HMMAnalyzer {
 			}
 		}
 		
-		System.out.println("Posterior Totals:");
-		for (String state : hmm.getStates()) {
-			System.out.println(state + "(" +totals.get(state).size() + "): " + totals.get(state));
-		}
+//		System.out.println("Posterior Totals:");
+//		for (String state : hmm.getStates()) {
+//			System.out.println(state + "(" +totals.get(state).size() + "): " + totals.get(state));
+//		}
 		
 		// Create Sequence
 		ArrayList<String> results = new ArrayList<String>();
@@ -332,12 +332,12 @@ public class HMMAnalyzer {
 			}
 			results.add(highestProbState);
 		}
-		System.out.println("Posterior: " + results);
+		//System.out.println("Posterior: " + results);
 		return results;
 	}
 	
-	public Double compareStateSequences(ArrayList<String> actualStateSequence, 
-			                            ArrayList<String> decodedStateSequence) {
+	public static Double compareStateSequences(List<String> actualStateSequence, 
+			                            	   List<String> decodedStateSequence) {
 		assert(actualStateSequence.size() == decodedStateSequence.size());
 		Double results = 0.0;
 		Double misses = 0.0;
