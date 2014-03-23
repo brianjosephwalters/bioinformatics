@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
-public class HMMSequenceCreator {
+public class HMMSequenceGenerator {
 	
 	/**
 	 * Creates a sequence of emissions and states producing those emissions
@@ -63,32 +63,11 @@ public class HMMSequenceCreator {
 	
 	/**
 	 * Returns the index of the weight which was selected by a Roulette
-	 * wheel algorithm.  
-	 * @require		an ordered list of weights, the sum of whose values = 1.0
-	 * @param weights
-	 * @return		the index of the weight which was selected.
+	 * Wheel algorithm.  
+	 * @require			an ordered list of weights, the sum of whose values = 1.0
+	 * @param weights	a list of weights
+	 * @return			the index of the weight which was selected.
 	 */
-	public static int rouletteWheel(double[] weights, double randomDouble) {
-		assert(checkWeights(weights));
-		for (int i = 0; i < weights.length; i++) {
-			randomDouble = randomDouble - weights[i];
-			if (randomDouble <= 0) {
-				return i;
-			}
-		}
-		return weights.length - 1;
-	}
-	
-	public static int rouletteWheel(Double[] weights, Double randomDouble) {
-		for (int i = 0; i < weights.length; i++) {
-			randomDouble = randomDouble - weights[i];
-			if (randomDouble <= 0) {
-				return i;
-			}
-		}
-		return weights.length - 1;
-	}
-	
 	public static int rouletteWheel(List<Double> weights, Double randomDouble) {
 		for (int i = 0; i < weights.size(); i++) {
 			randomDouble = randomDouble - weights.get(i);

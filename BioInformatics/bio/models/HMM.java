@@ -230,4 +230,8 @@ public class HMM {
 	public void setEndState(Hashtable<String, Double> endStateProb) {
 		this.endStateProb = endStateProb;
 	}
+	
+	public String toString() {
+		return this.emissionSequence + "\n" + this.stateSequence;
+	}
 }

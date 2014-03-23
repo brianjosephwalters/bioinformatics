@@ -2,10 +2,12 @@ package bio.views;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import bio.models.HMM;
 import bio.models.HMMAnalyzer;
 import bio.models.HMMFactory;
-import bio.models.HMMSequenceCreator;
+import bio.models.HMMSequenceGenerator;
 
 /**
  * A menu for working with Hidden Markov Models.
@@ -45,7 +47,7 @@ public class HMMMenu extends AbstractView {
 		} else if (choice == 2) {
 			HMMFactory hmmFactory = new HMMFactory();
 			HMM hmm = hmmFactory.createCasinoHMM();
-			HMMSequenceCreator.createSequenceFromHMM(hmm, 1000);
+			HMMSequenceGenerator.createSequenceFromHMM(hmm, 1000);
 			System.out.println(hmm.getEmissionSequence());
 			System.out.println(hmm.getStateSequence());
 			System.out.println(HMMAnalyzer.viterbi(hmm));
@@ -53,16 +55,22 @@ public class HMMMenu extends AbstractView {
 			HMMFactory hmmFactory = new HMMFactory();
 			HMM hmm = hmmFactory.createCasinoHMM();
 			hmmFactory.addCasinoTestSequence(hmm);
-			HMMAnalyzer.posteriorScaled(hmm);
+			System.out.println(hmm.getStateSequence());
+			List<String> posterior = HMMAnalyzer.posteriorScaled(hmm);
+			System.out.println(posterior);
+			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), posterior));	
 		} else if (choice == 4) {
 			HMMFactory hmmFactory = new HMMFactory();
 			HMM hmm = hmmFactory.createWeatherHMM();
 			hmmFactory.addWeatherTestSequence(hmm);
-			HMMAnalyzer.posteriorScaled(hmm);
+			List<String> posterior = HMMAnalyzer.posteriorScaled(hmm);
+			System.out.println(hmm.getStateSequence());
+			System.out.println(posterior);
+			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), posterior));	
 		} else if (choice == 5) {
 			HMMFactory hmmFactory = new HMMFactory();
 			HMM hmm = hmmFactory.createCasinoHMM();
-			HMMSequenceCreator.createSequenceFromHMM(hmm, 1000);
+			HMMSequenceGenerator.createSequenceFromHMM(hmm, 1000);
 			System.out.println(hmm.getEmissionSequence());
 			System.out.println(hmm.getStateSequence());
 			System.out.println(HMMAnalyzer.posteriorScaled(hmm));
@@ -83,7 +91,7 @@ public class HMMMenu extends AbstractView {
 		} else if (choice == 7) {
 			HMMFactory hmmFactory = new HMMFactory();
 			HMM hmm = hmmFactory.createCasinoHMM();
-			HMMSequenceCreator.createSequenceFromHMM(hmm, 1000);
+			HMMSequenceGenerator.createSequenceFromHMM(hmm, 1000);
 			List<String> viterbi = HMMAnalyzer.viterbi(hmm);
 			System.out.println("Viterbi:");
 			System.out.println(hmm.getStateSequence());
@@ -98,17 +106,21 @@ public class HMMMenu extends AbstractView {
 			HMMFactory hmmFactory = new HMMFactory();
 			Double[][] transProb = { {.99, .01}, {.10, .90} };
 			HMM hmm = hmmFactory.createCasinoHMM(transProb);
-			HMMSequenceCreator.createSequenceFromHMM(hmm, 1000);
+			HMMSequenceGenerator.createSequenceFromHMM(hmm, 1000);
 			List<String> viterbi = HMMAnalyzer.viterbi(hmm);
-			System.out.println("Viterbi:");
+			List<String> posterior = HMMAnalyzer.posteriorScaled(hmm);
+			System.out.println("Sequence");
 			System.out.println(hmm.getStateSequence());
 			System.out.println(viterbi);
-			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), viterbi));
-			List<String> posterior = HMMAnalyzer.posteriorScaled(hmm);
-			System.out.println("Posterior:");
-			System.out.println(hmm.getStateSequence());
 			System.out.println(posterior);
+			System.out.println("  L:" + StringUtils.countMatches(hmm.getStateSequence().toString(), "L"));
+
+			System.out.println("Viterbi:");
+			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), viterbi));
+			System.out.println("  L:" + StringUtils.countMatches(viterbi.toString(), "L"));
+			System.out.println("Posterior:");
 			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), posterior));			
+			System.out.println("  L:" + StringUtils.countMatches(posterior.toString(), "L"));
 		} else if (choice == 9) {
 			HMMFactory hmmFactory = new HMMFactory();
 			hmmFactory.runTest();

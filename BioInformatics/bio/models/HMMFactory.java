@@ -6,6 +6,10 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class HMMFactory {
+	/**
+	 * Generate the default values for an HMM following the Casino example.
+	 * @return		a hidden markov model
+	 */
 	public HMM createCasinoHMM() {
 		ArrayList<String> emissions = new ArrayList<String>(Arrays.asList("1", "2", "3", "4", "5", "6"));
 		ArrayList<String> states = new ArrayList<String>(Arrays.asList("F", "L"));
@@ -24,6 +28,10 @@ public class HMMFactory {
 		return new HMM(emissions, states, emissionProb, transitionProb, beginStates, endStates);
 	}
 	
+	/**
+	 * Generate the default values for an HMM following the Casino example.
+	 * @return		a hidden markov model
+	 */
 	public HMM createCasinoHMM(Double[][] transitionProb) {
 		ArrayList<String> emissions = new ArrayList<String>(Arrays.asList("1", "2", "3", "4", "5", "6"));
 		ArrayList<String> states = new ArrayList<String>(Arrays.asList("F", "L"));
@@ -110,7 +118,7 @@ public class HMMFactory {
 				Double[][] transProb = { {1-transitionProbabilities[i], transitionProbabilities[i]},
 						                 {.10, .9} };
 				HMM hmm = createCasinoHMM(transProb);
-				HMMSequenceCreator.createSequenceFromHMM(hmm, 1000);
+				HMMSequenceGenerator.createSequenceFromHMM(hmm, 1000);
 				List<String> viterbi = HMMAnalyzer.viterbi(hmm);
 				List<String> posterior = HMMAnalyzer.posteriorScaled(hmm);
 				Double viterbiPerformance = HMMAnalyzer
