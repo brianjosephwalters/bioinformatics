@@ -5,9 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * A Sequence of either nucleic or amino acids.
  * @author Brian J. Walters
- *
  */
-public class Sequence {
+public class AcidSequence {
 	// Constants
 	public static final int DNA = 1;
 	public static final int RNA = 2;
@@ -20,7 +19,7 @@ public class Sequence {
 	/**
 	 * Creates a new Sequence object.
 	 */
-	public Sequence() {
+	public AcidSequence() {
 		this.description = "";
 		this.sequence = new StringBuilder();
 	}
@@ -29,7 +28,7 @@ public class Sequence {
 	 * Creates a new Sequence object.
 	 * @param description	A description of a sequence provided by a FASTA file
 	 */
-	public Sequence(String description) {
+	public AcidSequence(String description) {
 		this.description = description;
 		this.sequence = new StringBuilder();
 	}

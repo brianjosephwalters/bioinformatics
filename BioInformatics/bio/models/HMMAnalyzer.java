@@ -6,9 +6,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class HMMAnalyzer {
-
+	
 	public static List<String> viterbi(HMM hmm) {
-		String[] viterbiStateSequence = new String[hmm.getEmissionSequence().size()];
 		Hashtable<String, ArrayList<Double>>probPath = new Hashtable<String, ArrayList<Double>>();
 		Hashtable<String, ArrayList<String>>path = new Hashtable<String, ArrayList<String>>();
 		
@@ -17,40 +16,51 @@ public class HMMAnalyzer {
 			path.put(state, new ArrayList<String>());
 		}
 		
-		// Calculate the start probabilities of the first emission from the beginning state.
+		//1) Calculate the start probabilities of the first emission from the beginning state.
 		for (String state : hmm.getStates()) {
+			//1.a) Get the "previous probability" from the begin state.
 			Double initStateProb = hmm.getBeginState().get(state);
+			//1.b) Get the emission probability for the current state.
 			Double emissionProb = hmm.getEmissionProbability(state, hmm.getEmissionSequence().get(0));
+			//1.c) Calculate the probability.
 			Double initLogProb = Math.log(initStateProb) + Math.log(emissionProb);
+			//1.d) Record the highest probability and state for the first index.
 			probPath.get(state).add(0, initLogProb);
 			path.get(state).add(0, state);
 		}
 		
-		// Now calculate the path probabilities through the remainder of the sequence.
+		//2) Now calculate the path probabilities through the remainder of the sequence.
 		for (int i = 1; i < hmm.getEmissionSequence().size(); i++) {
 			for (String currentState : hmm.getStates()) {
 				Double highestProb = 0.0;
 				String highestProbState = "";
 				for (String maxingState : hmm.getStates()) {
-					String emission = hmm.getEmissionSequence().get(i);
+					//2.a) Get the previous probability for the maxing state.
 					Double prevProb = probPath.get(maxingState).get(i-1);
+					//2.b) Get the transition probability from maxing state to the current state
 					Double transitionProb = hmm.getStateTransitionProbability(maxingState, currentState);
+					//2.c) Get the emission probability from the current state and this index.
+					String emission = hmm.getEmissionSequence().get(i);
 					Double emissionProb = hmm.getEmissionProbability(currentState, emission);
+					//2.d) Calculate the new probability.
 					Double newProb = prevProb + 
 							         Math.log(transitionProb) + 
 							         Math.log(emissionProb);
+					
+					//2.e) Determine if this is the highest value for the current state.
 					if (highestProb < newProb || highestProb == 0.0) {
 						highestProb = newProb;
 						highestProbState = maxingState;
 					}
 				}
+				//2.f) Record the highest probability and state for this index.
 				probPath.get(currentState).add(i, highestProb);
 				path.get(currentState).add(i, highestProbState);
 			}
 		}
 		
-		// Find the most probable state for the last emission of the sequence,
-		// given the end state probabilities.
+		//3) Find the most probable state for the last emission of the sequence,
+		//   given the end state probabilities.
 		Double highestLast = 0.0;
 		String highestLastState = "";
 		for (String state : hmm.getStates()) {
@@ -61,10 +71,11 @@ public class HMMAnalyzer {
 				highestLastState = state;
 			}
 		}
-		viterbiStateSequence[hmm.getEmissionSequence().size() - 1] = highestLastState;
 		
-		// Now trace back through the state probabilities to produce the 
-		// most probable path.
+		//4) Now trace back through the state probabilities to produce the 
+		//   most probable path.	
+		String[] viterbiStateSequence = new String[hmm.getEmissionSequence().size()];
+		viterbiStateSequence[hmm.getEmissionSequence().size() - 1] = highestLastState;
 		for (int i = hmm.getEmissionSequence().size() - 1; i > 0 ; i--) {
 			viterbiStateSequence[i-1] = path.get(highestLastState).get(i);
 			highestLastState = path.get(highestLastState).get(i);
@@ -90,8 +101,10 @@ public class HMMAnalyzer {
 						Double prevTotal = hmm.getBeginState().get(state);
 						//1.b) Get the transition probability to the current state from the summing state.
 						Double transitionProb = hmm.getStateTransitionProbability(summingState, state);
-						//1.c) Aggregate the total for the current state.
-						summingTotal += prevTotal * transitionProb;
+						//1.c) Get the emission probability for the current state.
+						Double emissionProb = hmm.getEmissionProbability(state, hmm.getEmissionSequence().get(i));
+						//1.d) Aggregate the total for the current state.
+						summingTotal += prevTotal * transitionProb * emissionProb;
 
 					} 
 					//otherwise... 
@@ -100,25 +113,25 @@ public class HMMAnalyzer {
 						Double prevTotal = stateProbs.get(summingState).get(i - 1);
 						//1.b) Get the transition probability to the current state from the summing state.
 						Double transitionProb = hmm.getStateTransitionProbability(summingState, state);
-						//1.c) Aggregate the total for the current state.
-						summingTotal += prevTotal * transitionProb;
+						//1.c) Get the emission probability for the current state.
+						Double emissionProb = hmm.getEmissionProbability(state, hmm.getEmissionSequence().get(i));
+						//1.d) Aggregate the total for the current state.
+						summingTotal += prevTotal * transitionProb * emissionProb;
 					}
-				}
-				//1.d) Get the emission probability for the current state.
-				Double emissionProb = hmm.getEmissionProbability(state, hmm.getEmissionSequence().get(i));
+				}				
 				
-				//1.3) Compute the total probability for the current state.
-				stateProbs.get(state).add(i, summingTotal * emissionProb);
+				//1.e) Compute the total probability for the current state.
+				stateProbs.get(state).add(i, summingTotal);
 			}
 			
-			// 2) Identify scaling coefficient = the sum over all states.
+			//2) Identify scaling coefficient = the sum over all states.
 			Double indexTotal = 0.0;
 			for (String state: hmm.getStates()) {
 				indexTotal += stateProbs.get(state).get(i);
 			}
 			scales.add(indexTotal);
 			
-			// 3)Apply scaling coefficent to each state's probability
+			//3) Apply scaling coefficent to each state's probability
 			//   and save it as the new probability for that state, x, at i.
 			for (String state : hmm.getStates()) {
 				Double total = stateProbs.get(state).get(i);
@@ -134,8 +147,7 @@ public class HMMAnalyzer {
 		for (String state : hmm.getStates()) {
 			stateProbs.put(state, new ArrayList<Double>());
 		}
-		ArrayList<Double> stateProbTotals = new ArrayList<Double>();
-				
+		
 		for (int i = hmm.getEmissionSequence().size() - 1; i >= 0; i--) {
 			//1) Get the backward probability for each state.
 			for (String state : hmm.getStates()) {
@@ -165,7 +177,7 @@ public class HMMAnalyzer {
 
 					}
 				}
-				// 2) Apply scaling coefficient to total probability for state
+				//2) Apply scaling coefficient to total probability for state
 				stateProbs.get(state).add(0, totalProb / scales.get(i));
 			}
 		}		
@@ -209,24 +221,33 @@ public class HMMAnalyzer {
 		}
 		//System.out.println ("Backward Termination, P(x): " + backwardTotal);
 		
+		// ##Scale P(x): ??
+		Double logScaleSum = 0.0;
+		for (int i = 0; i < scale.size(); i++) {
+			logScaleSum += Math.log10(scale.get(i));
+		}
+		logScaleSum = -logScaleSum;
+		logScaleSum = Math.pow(10, logScaleSum);
+		System.out.println(" Log Scale: " + logScaleSum);
+		
 		// ##Posterior State Probabilities
-		Hashtable<String, ArrayList<Double>> totals = new Hashtable<String, ArrayList<Double>>();
+		Hashtable<String, ArrayList<Double>> posterior = new Hashtable<String, ArrayList<Double>>();
 		for (String state : hmm.getStates()) {
-			totals.put(state, new ArrayList<Double>());
+			posterior.put(state, new ArrayList<Double>());
 		}
 		
 		for (int i = 0; i < hmm.getEmissionSequence().size(); i++) {
 			for (String state : hmm.getStates()) {
-				Double total = forward.get(state).get(i) * backward.get(state).get(i);
-				//Double total = (forward.get(state).get(i) * backward.get(state).get(i)) / forwardTotal;
-				totals.get(state).add(total);
+				//Double total = forward.get(state).get(i) * backward.get(state).get(i);
+				Double total = (forward.get(state).get(i) * backward.get(state).get(i)) / logScaleSum;
+				posterior.get(state).add(total);
 			}
 		}
 		
-//		System.out.println("Posterior Totals:");
-//		for (String state : hmm.getStates()) {
-//			System.out.println(state + "(" +totals.get(state).size() + "): " + totals.get(state));
-//		}
+		System.out.println("Posterior Totals:");
+		for (String state : hmm.getStates()) {
+			System.out.println(state + "(" +posterior.get(state).size() + "): " + posterior.get(state));
+		}
 		
 		// Create Sequence
 		ArrayList<String> results = new ArrayList<String>();
@@ -234,8 +255,8 @@ public class HMMAnalyzer {
 			Double highestProb = 0.0;
 			String highestProbState = "";
 			for (String state : hmm.getStates()) {
-				if (highestProb < totals.get(state).get(i)) {
-					highestProb = totals.get(state).get(i);
+				if (highestProb < posterior.get(state).get(i)) {
+					highestProb = posterior.get(state).get(i);
 					highestProbState = state;
 				}
 			}

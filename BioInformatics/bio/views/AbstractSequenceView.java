@@ -9,8 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import bio.controllers.ChunkParser;
 import bio.controllers.FileParser;
 import bio.controllers.Reporter;
-import bio.models.SequenceAnalyzer;
-import bio.models.Sequence;
+import bio.models.AcidSequenceAnalyzer;
+import bio.models.AcidSequence;
 
 public abstract class AbstractSequenceView extends AbstractView {
 	/**
@@ -21,8 +21,8 @@ public abstract class AbstractSequenceView extends AbstractView {
 	 */
 	protected List<Hashtable<String,Integer>> reportEntireSample(String... files) {
 		FileParser fileParser = new FileParser();
-		SequenceAnalyzer analyzer = new SequenceAnalyzer();
-		List<Sequence> list = new ArrayList<Sequence>();
+		AcidSequenceAnalyzer analyzer = new AcidSequenceAnalyzer();
+		List<AcidSequence> list = new ArrayList<AcidSequence>();
 		// For every provided file...
 		for (String file : files) {
 			// parse the file and add the resulting list of sequences to the complete list.
@@ -47,7 +47,7 @@ public abstract class AbstractSequenceView extends AbstractView {
 	 * @return         a list containing separate totals for nucleic and amino acids.  
 	 */
 	protected List<Hashtable<String,Integer>> reportEntireSampleByChunking(String... files) {
-		SequenceAnalyzer analyzer = new SequenceAnalyzer();
+		AcidSequenceAnalyzer analyzer = new AcidSequenceAnalyzer();
 		// Prepare our data structure.
 		List<Hashtable<String, Integer>> aggregateData = new ArrayList<Hashtable<String,Integer>>();
 		aggregateData.add(new Hashtable<String, Integer>());
@@ -55,7 +55,7 @@ public abstract class AbstractSequenceView extends AbstractView {
 		
 		// For every provided file...
 		for (String file : files) {
-			List<Sequence> list = new ArrayList<Sequence>();
+			List<AcidSequence> list = new ArrayList<AcidSequence>();
 			// prepare a chunk parser for the file.
 			ChunkParser parser = new ChunkParser(file);
 			// Until the file is empty, do...

@@ -54,6 +54,7 @@ public class HMMSequenceGenerator {
 			emissionSequence.add(emission);
 			stateSequence.add(state);
 		}
+		
 		// Set results in HMM
 		hmm.setEmissionSequence(emissionSequence);
 		hmm.setStateSequence(stateSequence);

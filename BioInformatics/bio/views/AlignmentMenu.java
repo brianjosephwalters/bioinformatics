@@ -7,7 +7,7 @@ import bio.controllers.FileParser;
 import bio.controllers.Reporter;
 import bio.controllers.SubstitutionMatrixParser;
 import bio.models.NWAligner;
-import bio.models.Sequence;
+import bio.models.AcidSequence;
 import bio.models.SubstitutionMatrix;
 
 /**
@@ -32,7 +32,7 @@ public class AlignmentMenu extends AbstractView {
 	 * @param list			a list of aligned sequences
 	 * @param filename		the name of the file to store the sequences
 	 */
-	private void saveSequenceAlignment(ArrayList<Sequence> list, String filename) {
+	private void saveSequenceAlignment(ArrayList<AcidSequence> list, String filename) {
 		Reporter reporter = new Reporter(filename);
 		reporter.createSequenceAlignmentReport(list);
 		reporter.close();
@@ -42,8 +42,8 @@ public class AlignmentMenu extends AbstractView {
 	 * Displays the aligned sequences to the screen.
 	 * @param list		a list of aligned sequences
 	 */
-	private void displaySequenceAlignment(List<Sequence> list) {
-		for (Sequence seq : list) {
+	private void displaySequenceAlignment(List<AcidSequence> list) {
+		for (AcidSequence seq : list) {
 			System.out.println(seq.getSequence());
 		}
 	}
@@ -67,13 +67,13 @@ public class AlignmentMenu extends AbstractView {
 			SubstitutionMatrixParser parser = new SubstitutionMatrixParser(BLOSUM50);
 			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix();
 			subMatrix.setGapWeight(8);
-			Sequence alpha = new Sequence();
+			AcidSequence alpha = new AcidSequence();
 			alpha.appendSequence("PAWHEAE");
-			Sequence beta = new Sequence();
+			AcidSequence beta = new AcidSequence();
 			beta.appendSequence("HEAGAWGHEE");
 			NWAligner aligner = new NWAligner(alpha, beta, subMatrix);
 			System.out.println(aligner);
-			ArrayList<Sequence> alignedSequences = aligner.getAlignment();
+			ArrayList<AcidSequence> alignedSequences = aligner.getAlignment();
 			displaySequenceAlignment(alignedSequences);
 		}
 		else if (choice == 2) {
@@ -81,10 +81,10 @@ public class AlignmentMenu extends AbstractView {
 			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix();
 			subMatrix.setGapWeight(8);
 			FileParser fileParser = new FileParser();
-			Sequence mus = fileParser.parseFile(MUS_MUSCULU).get(0);
-			Sequence xenopus = fileParser.parseFile(XENOPUS_LAEVIS).get(0);
+			AcidSequence mus = fileParser.parseFile(MUS_MUSCULU).get(0);
+			AcidSequence xenopus = fileParser.parseFile(XENOPUS_LAEVIS).get(0);
 			NWAligner aligner = new NWAligner(mus, xenopus, subMatrix);
-			ArrayList<Sequence> alignedSequences = aligner.getAlignment();
+			ArrayList<AcidSequence> alignedSequences = aligner.getAlignment();
 			displaySequenceAlignment(alignedSequences);
 			saveSequenceAlignment(alignedSequences, MUS_XENOPUS_ALIGNMENT);
 		}
@@ -93,10 +93,10 @@ public class AlignmentMenu extends AbstractView {
 			SubstitutionMatrix<Integer> subMatrix = parser.parseSubstitutionMatrix();
 			subMatrix.setGapWeight(8);
 			FileParser fileParser = new FileParser();
-			Sequence hyphantria = fileParser.parseFile(HYPHANTRIA_CUNEA).get(0);
-			Sequence anopheles = fileParser.parseFile(ANOPHELES_GAMBIAE).get(0);
+			AcidSequence hyphantria = fileParser.parseFile(HYPHANTRIA_CUNEA).get(0);
+			AcidSequence anopheles = fileParser.parseFile(ANOPHELES_GAMBIAE).get(0);
 			NWAligner aligner = new NWAligner(hyphantria, anopheles, subMatrix);
-			ArrayList<Sequence> alignedSequences = aligner.getAlignment();
+			ArrayList<AcidSequence> alignedSequences = aligner.getAlignment();
 			displaySequenceAlignment(alignedSequences);
 			saveSequenceAlignment(alignedSequences, HYPHANTRIA_ANOPHELES_ALIGNMENT);
 		}

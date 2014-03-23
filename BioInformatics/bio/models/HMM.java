@@ -231,6 +231,9 @@ public class HMM {
 		this.endStateProb = endStateProb;
 	}
 	
+	/**
+	 * A String representation of the Hidden Markov Model.
+	 */
 	public String toString() {
 		return this.emissionSequence + "\n" + this.stateSequence;
 	}

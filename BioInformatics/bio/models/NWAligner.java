@@ -10,8 +10,8 @@ import java.util.ArrayList;
  *
  */
 public class NWAligner {
-	private Sequence alpha;
-	private Sequence beta;
+	private AcidSequence alpha;
+	private AcidSequence beta;
 	private SubstitutionMatrix<Integer> subMatrix;
 	
 	private ArrayList<ArrayList<NWCell>> matrix;
@@ -22,8 +22,8 @@ public class NWAligner {
 	 * @param beta			another Sequence to be aligned
 	 * @param subMatrix		the substitution matrix
 	 */
-	public NWAligner (Sequence alpha,
-			           Sequence beta,
+	public NWAligner (AcidSequence alpha,
+			           AcidSequence beta,
 			           SubstitutionMatrix<Integer> subMatrix) {
 		this.alpha = alpha;
 		this.beta = beta;
@@ -151,11 +151,11 @@ public class NWAligner {
 	 * Create two aligned sequences using the Needleman-Wunsch algorithm. 
 	 * @return	a list containing two aligned Sequences.
 	 */
-	public ArrayList<Sequence> getAlignment() {
-		ArrayList<Sequence> alignedSequences = new ArrayList<Sequence>();
+	public ArrayList<AcidSequence> getAlignment() {
+		ArrayList<AcidSequence> alignedSequences = new ArrayList<AcidSequence>();
 		// Create two new sequences to store the aligned sequences.
-		Sequence alignedAlpha = new Sequence();
-		Sequence alignedBeta = new Sequence();
+		AcidSequence alignedAlpha = new AcidSequence();
+		AcidSequence alignedBeta = new AcidSequence();
 		// Get the length indexes of the last acids in each sequence.
 		int alphaStart = alpha.getSequence().length();
 		int betaStart = beta.getSequence().length();

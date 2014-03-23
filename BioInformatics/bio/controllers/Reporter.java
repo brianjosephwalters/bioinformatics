@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.util.Hashtable;
 import java.util.List;
 
-import bio.models.Sequence;
+import bio.models.AcidSequence;
 
 /**
  * Produces a report on the total number of acids and the
@@ -63,8 +63,8 @@ public class Reporter {
 	 *                      amino and nucleic acids
 	 * @param reportTitle   the title of the report
 	 */
-	public void createSequenceAlignmentReport(List<Sequence> list) {
-		for (Sequence seq : list) {
+	public void createSequenceAlignmentReport(List<AcidSequence> list) {
+		for (AcidSequence seq : list) {
 			pw.println(seq.getSequence());
 		}
 		pw.println("\n");

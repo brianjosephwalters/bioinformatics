@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import bio.models.Sequence;
+import bio.models.AcidSequence;
 
 /**
  * Parses a FASTA file.
@@ -18,8 +18,8 @@ public class FileParser {
 	 * @param filename	the FASTA file to parse
 	 * @return			a list of Sequence objects
 	 */
-	public List<Sequence> parseFile(String filename) {
-		ArrayList<Sequence> list = new ArrayList<Sequence>();
+	public List<AcidSequence> parseFile(String filename) {
+		ArrayList<AcidSequence> list = new ArrayList<AcidSequence>();
 		
 		// Create a scanner from the provided filename.
 		Scanner scanner = null;
@@ -31,7 +31,7 @@ public class FileParser {
 		
 		// Begin with an initial sequence
 		// TODO: assumes file is not empty
-		Sequence sequence = new Sequence();
+		AcidSequence sequence = new AcidSequence();
 		// While we have not reached the end of the file... 
 		while (scanner.hasNextLine()) {
 			// Get a line from the FASTA file...
@@ -41,7 +41,7 @@ public class FileParser {
 			if (!line.isEmpty() && line.charAt(0) == '>') {
 				// then it is the start of a new Sequence
 				// and should be used as the description.
-				sequence = new Sequence(line.substring(1));
+				sequence = new AcidSequence(line.substring(1));
 			}
 			// If the line is empty, then we have reached
 			// the end of a sequence...

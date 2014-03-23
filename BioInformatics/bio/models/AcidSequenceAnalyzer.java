@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Brian J. Walters
  *
  */
-public class SequenceAnalyzer {
+public class AcidSequenceAnalyzer {
 	// Codes used by the FASTA file format.
 	public static final String nucleicAcidCodes = "ACGTURYKMSWBDHVNX-";
 	public static final String aminoAcidCodes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ-*";
@@ -23,7 +23,7 @@ public class SequenceAnalyzer {
 	 *       resemble a Protein sequence.
 	 * @param sequence	a Sequence object
 	 */
-	public void determineType(Sequence sequence) {
+	public void determineType(AcidSequence sequence) {
 		// Ensure that the sequences provided are all upper case.
 		String seq = sequence.getSequence().toUpperCase();
 		// The FASTA format for nucleic acid codes do not contain
@@ -40,15 +40,15 @@ public class SequenceAnalyzer {
 	    	 seq.contains("Q") ||
 	    	 seq.contains("Z") ||
 	    	 seq.contains("*") ) {
-			sequence.setType(Sequence.PROTEIN);
+			sequence.setType(AcidSequence.PROTEIN);
 		} 
 	    // DNA does not contain a U code.  
 	    else if (sequence.getSequence().contains("U")) {
-			sequence.setType(Sequence.RNA);
+			sequence.setType(AcidSequence.RNA);
 		} 
 	    // If it is neither of the above, it must be DNA.
 	    else {
-			sequence.setType(Sequence.DNA);
+			sequence.setType(AcidSequence.DNA);
 		}
 	}
 	
@@ -60,8 +60,8 @@ public class SequenceAnalyzer {
 	 *       resemble a Protein sequence.	
 	 * @param list	a list of Sequence objects.
 	 */
-	public void determineTypes(List<Sequence> list) {
-		for (Sequence sequence : list) {
+	public void determineTypes(List<AcidSequence> list) {
+		for (AcidSequence sequence : list) {
 			determineType(sequence);
 		}
 	}
@@ -72,11 +72,11 @@ public class SequenceAnalyzer {
 	 * @return			a hashtable containing all of the present nucleic acid codes
 	 *                  and their count in the sequence.
 	 */
-	public Hashtable<String, Integer> determineNucleicAcidCount(Sequence sequence) {
+	public Hashtable<String, Integer> determineNucleicAcidCount(AcidSequence sequence) {
 		Hashtable<String, Integer> table = new Hashtable<String, Integer>();
 		// If the sequence is either DNA or RNA...
-		if ( sequence.getType() == Sequence.DNA ||
-			 sequence.getType() == Sequence.RNA    ) {	
+		if ( sequence.getType() == AcidSequence.DNA ||
+			 sequence.getType() == AcidSequence.RNA    ) {	
 			// For every possible nucleic acid code in the FASTA format...
 			for (int i = 0; i < nucleicAcidCodes.length(); i++) {
 				// count the number of occurrences of that code...
@@ -96,10 +96,10 @@ public class SequenceAnalyzer {
 	 * @return			a hashtable containing all of the present amino acid codes
 	 *                  and their count in the sequence.
 	 */
-	public Hashtable<String, Integer> determineAminoAcidCount(Sequence sequence) {
+	public Hashtable<String, Integer> determineAminoAcidCount(AcidSequence sequence) {
 		Hashtable<String, Integer> table = new Hashtable<String, Integer>();
 		// If the sequence is a protein
-		if ( sequence.getType() == Sequence.PROTEIN ) {
+		if ( sequence.getType() == AcidSequence.PROTEIN ) {
 			// For every possible amino acid code in the FASTA format...
 			for (int i = 0; i < aminoAcidCodes.length(); i++) {
 				// count the number of occurrences of that code...
@@ -119,17 +119,17 @@ public class SequenceAnalyzer {
 	 * @return 		a set of hashtables containing the totals for each
 	 *              amino acid and nucleic acid code.  
 	 */
-	public List<Hashtable<String, Integer>> determineTotals(List<Sequence> list) {
+	public List<Hashtable<String, Integer>> determineTotals(List<AcidSequence> list) {
 		// Prepare a data structure
 		List<Hashtable<String, Integer>> tables = new ArrayList<Hashtable<String,Integer>>();
 		Hashtable<String, Integer> aminoAcidTable = new Hashtable<String, Integer>();
 		Hashtable<String, Integer> nucleicAcidTable = new Hashtable<String, Integer>();
 		
 		// For every sequence in the list...
-		for (Sequence sequence : list) {
+		for (AcidSequence sequence : list) {
 			// if it contains nucleic acids...
-			if ( sequence.getType() == Sequence.DNA ||
-				 sequence.getType() == Sequence.RNA    ) {	
+			if ( sequence.getType() == AcidSequence.DNA ||
+				 sequence.getType() == AcidSequence.RNA    ) {	
 				// determine the total for the sequence...
 				Hashtable<String, Integer> tempTable = determineNucleicAcidCount(sequence);
 				// and then add the totals to its aggregating hashtable.
@@ -145,7 +145,7 @@ public class SequenceAnalyzer {
 				}
 			} 
 			// if it contains amino acids...
-			else if ( sequence.getType() == Sequence.PROTEIN ) {
+			else if ( sequence.getType() == AcidSequence.PROTEIN ) {
 				// determine the total for the sequence...
 				Hashtable<String, Integer> tempTable = determineAminoAcidCount(sequence);
 				// and then add the totals to its aggregating hashtable.

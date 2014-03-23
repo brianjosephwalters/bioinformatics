@@ -48,7 +48,11 @@ public class HMMFactory {
 		
 		return new HMM(emissions, states, emissionProb, transitionProb, beginStates, endStates);
 	}
-		
+	
+	/**
+	 * Add the Casino test sequence to a Hidden Markov Model. 
+	 * @param hmm		a Hidden Markov Model
+	 */
 	public void addCasinoTestSequence(HMM hmm) {
 		String emissions = 
 				"315116246" + "446644245" + "311321631" + 
@@ -77,6 +81,10 @@ public class HMMFactory {
 		hmm.setStateSequence(Arrays.asList(states.split("(?!^)")));
 	}
 
+	/**
+	 * Create a Hidden Markov Model with the Weather data.
+	 * @return
+	 */
 	public HMM createWeatherHMM() {
 		ArrayList<String> emissions = new ArrayList<String>(Arrays.asList("See Umbrella", "See No Umbrella"));
 		ArrayList<String> states = new ArrayList<String>(Arrays.asList("Rain", "No Rain"));
@@ -93,7 +101,11 @@ public class HMMFactory {
 		
 		return new HMM(emissions, states, emissionProb, transitionProb, beginStates, endStates);
 	}
-	
+
+	/**
+	 * Add the Weather test sequence to a Hidden Markov Model. 
+	 * @param hmm		a Hidden Markov Model
+	 */
 	public void addWeatherTestSequence(HMM hmm) {
 		hmm.setEmissionSequence(Arrays.asList("See Umbrella",
 											  "See Umbrella",

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import bio.models.Sequence;
+import bio.models.AcidSequence;
 
 /**
  * Parses a FASTA file, providing chunks of Sequence objects
@@ -45,12 +45,12 @@ public class ChunkParser {
 	 * Parses a chunk of Sequence objects from the file.
 	 * @return	a list of Sequence objects.
 	 */
-	public List<Sequence> parseChunk() {
-		ArrayList<Sequence> list = new ArrayList<Sequence>();
+	public List<AcidSequence> parseChunk() {
+		ArrayList<AcidSequence> list = new ArrayList<AcidSequence>();
 		
 		// Begin with an initial sequence
 		// TODO: assumes file is not empty
-		Sequence sequence = new Sequence();
+		AcidSequence sequence = new AcidSequence();
 		// While the file is not finished and we have not reached the 
 		// total number of sequences per chunk...
 		while (scanner.hasNextLine() && list.size() < chunkSize) {
@@ -61,7 +61,7 @@ public class ChunkParser {
 			if (!line.isEmpty() && line.charAt(0) == '>') {
 				// then it is the start of a new Sequence
 				// and should be used as the description.
-				sequence = new Sequence(line.substring(1));
+				sequence = new AcidSequence(line.substring(1));
 			}
 			// If the line is empty, then we have reached
 			// the end of a sequence...
