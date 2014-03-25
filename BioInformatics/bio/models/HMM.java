@@ -232,6 +232,24 @@ public class HMM {
 	}
 	
 	/**
+	 * Returns the proportion of index that are not coded to the same state.
+	 * @param decodedSequence	a sequence of states to compare with this HMM
+	 * @return
+	 */
+	public Double compareDecodedSequence(List<String> decodedSequence) {
+		assert(this.stateSequence.size() == decodedSequence.size());
+		Double results = 0.0;
+		Double misses = 0.0;
+		for (int i = 0; i < this.stateSequence.size(); i++) {
+			if (!(this.stateSequence.get(i).equals(decodedSequence.get(i)))) {
+				misses = misses + 1;
+			}
+		}
+		results = misses / this.stateSequence.size();
+		return results;
+	}
+	
+	/**
 	 * A String representation of the Hidden Markov Model.
 	 */
 	public String toString() {

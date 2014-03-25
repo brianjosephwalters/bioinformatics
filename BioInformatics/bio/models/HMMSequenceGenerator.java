@@ -28,7 +28,7 @@ public class HMMSequenceGenerator {
 		}
 		int stateIndex = rouletteWheel(values, r.nextDouble());
 		String state = keys.get(stateIndex);
-			
+
 		// Create Entries
 		Hashtable<String, Double> transitions = hmm.getStateTransitionProbabilities(state);
 		Hashtable<String, Double> emissions = hmm.getEmissionProbabilities(state);

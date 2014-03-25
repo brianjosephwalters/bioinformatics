@@ -8,6 +8,8 @@ import bio.models.HMM;
 import bio.models.HMMAnalyzer;
 import bio.models.HMMFactory;
 import bio.models.HMMSequenceGenerator;
+import bio.models.PosteriorDecoding;
+import bio.models.ViterbiDecoding;
 
 /**
  * A menu for working with Hidden Markov Models.
@@ -41,85 +43,95 @@ public class HMMMenu extends AbstractView {
 			HMMFactory hmmFactory = new HMMFactory();
 			HMM hmm = hmmFactory.createCasinoHMM();
 			hmmFactory.addCasinoTestSequence(hmm);
+			ViterbiDecoding viterbi = new ViterbiDecoding(hmm);
+
 			System.out.println(hmm.getEmissionSequence());
 			System.out.println(hmm.getStateSequence());
-			System.out.println(HMMAnalyzer.viterbi(hmm));
+			System.out.println(viterbi.getSequence());
 		} else if (choice == 2) {
 			HMMFactory hmmFactory = new HMMFactory();
 			HMM hmm = hmmFactory.createCasinoHMM();
 			HMMSequenceGenerator.createSequenceFromHMM(hmm, 1000);
+			ViterbiDecoding viterbi = new ViterbiDecoding(hmm);
+
 			System.out.println(hmm.getEmissionSequence());
 			System.out.println(hmm.getStateSequence());
-			System.out.println(HMMAnalyzer.viterbi(hmm));
+			System.out.println(viterbi.getSequence());
 	    } else if (choice == 3) {
 			HMMFactory hmmFactory = new HMMFactory();
 			HMM hmm = hmmFactory.createCasinoHMM();
 			hmmFactory.addCasinoTestSequence(hmm);
+			PosteriorDecoding decoding = new PosteriorDecoding(hmm);
+
 			System.out.println(hmm.getStateSequence());
-			List<String> posterior = HMMAnalyzer.posteriorScaled(hmm);
-			System.out.println(posterior);
-			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), posterior));	
+			System.out.println(decoding.getSequence());
+			System.out.println("  Error: " + hmm.compareDecodedSequence(decoding.getSequence()));
 		} else if (choice == 4) {
 			HMMFactory hmmFactory = new HMMFactory();
 			HMM hmm = hmmFactory.createWeatherHMM();
 			hmmFactory.addWeatherTestSequence(hmm);
-			List<String> posterior = HMMAnalyzer.posteriorScaled(hmm);
+			PosteriorDecoding decoding = new PosteriorDecoding(hmm);
+			
 			System.out.println(hmm.getStateSequence());
-			System.out.println(posterior);
-			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), posterior));	
+			System.out.println(decoding.getSequence());
+			System.out.println("  Error: " + hmm.compareDecodedSequence(decoding.getSequence()));
 		} else if (choice == 5) {
 			HMMFactory hmmFactory = new HMMFactory();
 			HMM hmm = hmmFactory.createCasinoHMM();
 			HMMSequenceGenerator.createSequenceFromHMM(hmm, 1000);
+			PosteriorDecoding decoding = new PosteriorDecoding(hmm);
+			
 			System.out.println(hmm.getEmissionSequence());
 			System.out.println(hmm.getStateSequence());
-			System.out.println(HMMAnalyzer.posteriorScaled(hmm));
+			System.out.println(decoding.getSequence());
 		} else if (choice == 6) {
 			HMMFactory hmmFactory = new HMMFactory();
 			HMM hmm = hmmFactory.createCasinoHMM();
 			hmmFactory.addCasinoTestSequence(hmm);
-			List<String> viterbi = HMMAnalyzer.viterbi(hmm);
+			ViterbiDecoding viterbi = new ViterbiDecoding(hmm);
+			PosteriorDecoding posterior = new PosteriorDecoding(hmm);
+			
 			System.out.println("Viterbi:");
 			System.out.println(hmm.getStateSequence());
-			System.out.println(viterbi);
-			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), viterbi));
-			List<String> posterior = HMMAnalyzer.posteriorScaled(hmm);
+			System.out.println(viterbi.getSequence());
+			System.out.println("  Error: " + hmm.compareDecodedSequence(viterbi.getSequence()));
 			System.out.println("Posterior:");
 			System.out.println(hmm.getStateSequence());
-			System.out.println(posterior);
-			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), posterior));			
+			System.out.println(posterior.getSequence());
+			System.out.println("  Error: " + hmm.compareDecodedSequence(posterior.getSequence()));
 		} else if (choice == 7) {
 			HMMFactory hmmFactory = new HMMFactory();
 			HMM hmm = hmmFactory.createCasinoHMM();
 			HMMSequenceGenerator.createSequenceFromHMM(hmm, 1000);
-			List<String> viterbi = HMMAnalyzer.viterbi(hmm);
+			ViterbiDecoding viterbi = new ViterbiDecoding(hmm);
+			PosteriorDecoding posterior = new PosteriorDecoding(hmm);
+			
 			System.out.println("Viterbi:");
 			System.out.println(hmm.getStateSequence());
-			System.out.println(viterbi);
-			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), viterbi));
-			List<String> posterior = HMMAnalyzer.posteriorScaled(hmm);
+			System.out.println(viterbi.getSequence());
+			System.out.println("  Error: " + hmm.compareDecodedSequence(viterbi.getSequence()));
 			System.out.println("Posterior:");
 			System.out.println(hmm.getStateSequence());
-			System.out.println(posterior);
-			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), posterior));			
+			System.out.println(posterior.getSequence());
+			System.out.println("  Error: " + hmm.compareDecodedSequence(posterior.getSequence()));
 		} else if (choice == 8) {
 			HMMFactory hmmFactory = new HMMFactory();
 			Double[][] transProb = { {.99, .01}, {.10, .90} };
 			HMM hmm = hmmFactory.createCasinoHMM(transProb);
 			HMMSequenceGenerator.createSequenceFromHMM(hmm, 1000);
-			List<String> viterbi = HMMAnalyzer.viterbi(hmm);
-			List<String> posterior = HMMAnalyzer.posteriorScaled(hmm);
+			ViterbiDecoding viterbi = new ViterbiDecoding(hmm);
+			PosteriorDecoding posterior = new PosteriorDecoding(hmm);
 			System.out.println("Sequence");
 			System.out.println(hmm.getStateSequence());
-			System.out.println(viterbi);
-			System.out.println(posterior);
+			System.out.println(viterbi.getSequence());
+			System.out.println(posterior.getSequence());
 			System.out.println("  L:" + StringUtils.countMatches(hmm.getStateSequence().toString(), "L"));
 
 			System.out.println("Viterbi:");
-			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), viterbi));
+			System.out.println("  Error: " + hmm.compareDecodedSequence(viterbi.getSequence()));
 			System.out.println("  L:" + StringUtils.countMatches(viterbi.toString(), "L"));
 			System.out.println("Posterior:");
-			System.out.println("  error: " + HMMAnalyzer.compareStateSequences(hmm.getStateSequence(), posterior));			
+			System.out.println("  Error: " + hmm.compareDecodedSequence(posterior.getSequence()));
 			System.out.println("  L:" + StringUtils.countMatches(posterior.toString(), "L"));
 		} else if (choice == 9) {
 			HMMFactory hmmFactory = new HMMFactory();

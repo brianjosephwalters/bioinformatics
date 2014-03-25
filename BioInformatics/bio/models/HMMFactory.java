@@ -131,14 +131,10 @@ public class HMMFactory {
 						                 {.10, .9} };
 				HMM hmm = createCasinoHMM(transProb);
 				HMMSequenceGenerator.createSequenceFromHMM(hmm, 1000);
-				List<String> viterbi = HMMAnalyzer.viterbi(hmm);
-				List<String> posterior = HMMAnalyzer.posteriorScaled(hmm);
-				Double viterbiPerformance = HMMAnalyzer
-						.compareStateSequences(hmm.getStateSequence(), viterbi);
-				Double posteriorPerformance = HMMAnalyzer
-						.compareStateSequences(hmm.getStateSequence(), posterior);
-				viterbiRuns.add(viterbiPerformance);
-				posteriorRuns.add(posteriorPerformance);
+				ViterbiDecoding viterbi = new ViterbiDecoding(hmm);
+				PosteriorDecoding posterior = new PosteriorDecoding(hmm);
+				viterbiRuns.add(hmm.compareDecodedSequence(viterbi.getSequence()));
+				posteriorRuns.add(hmm.compareDecodedSequence(posterior.getSequence()));
 			}
 			
 			Double viterbiAverage = 0.0;

@@ -51,5 +51,16 @@ public class StateSequence<Element> {
 			data.get(state).add(index, value);
 	}
 	
+	public void set(String state, Integer index, Element value) {
+		if (data.keySet().contains(state))
+			data.get(state).set(index, value);
+	}
 
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (String state : states) {
+			sb.append(data.get(state));
+		}
+		return sb.toString();
+	}
 }
