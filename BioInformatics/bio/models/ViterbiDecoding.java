@@ -3,12 +3,21 @@ package bio.models;
 import java.util.Arrays;
 import java.util.List;
 
-public class ViterbiDecoding {
+/**
+ * A decoding produced from a Hidden Markov Model using the 
+ * Viterbi Algorithm.
+ * @author Brian J. Walters
+ */
+public class ViterbiDecoding implements DecodingInterface {
 	private HMM hmm;
 	private StateSequence<Double> stateProb;
 	private StateSequence<String> statePath;
 	private List<String> decodedSequence;
 	
+	/**
+	 * Create a new Viterbi Decoding for the Hidden Markov Model.
+	 * @param hmm		a hidden markov model
+	 */
 	public ViterbiDecoding(HMM hmm) {
 		this.hmm = hmm;
 		this.stateProb = new StateSequence<Double>(hmm.getStates());
@@ -16,22 +25,42 @@ public class ViterbiDecoding {
 		this.decodedSequence = decode();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public HMM getHMM() {
 		return this.hmm;
 	}
 	
+	/**
+	 * Returns the probabilities of the path to each state at each emission.
+	 * @return		a sequence of path probabilities
+	 */
 	public StateSequence<Double> getStateProbabilities() {
 		return this.stateProb;
 	}
 	
+	/**
+	 * Returns the most likely state that could have produced this emissions
+	 * if it were caused by this state.
+	 * @return		a sequence of most like states.
+	 */
 	public StateSequence<String> getStatePaths() {
 		return this.statePath;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<String> getSequence() {
 		return decodedSequence;
 	}
 	
+	/**
+	 * Predict the most likely path of hidden states that would produce the 
+	 * the sequence of emissions given the associated Hidden Markov Model.
+	 * @return		a sequence of hidden states.
+	 */
 	private List<String> decode() {
 		//1) Calculate the start probabilities of the first emission from the beginning state.
 		for (String state : hmm.getStates()) {

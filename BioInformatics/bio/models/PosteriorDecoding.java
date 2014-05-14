@@ -3,38 +3,78 @@ package bio.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PosteriorDecoding {
+/**
+ * A decoding produced from a Hidden Markov Model using the
+ * posterior algorithm
+ * @author Brian J. Walters
+ */
+public class PosteriorDecoding implements DecodingInterface {
 	private HMM hmm;
 	private StateSequence<Double> forward;
 	private StateSequence<Double> backward;
 	private StateSequence<Double> posterior;
 	private List<String> decodedSequence;
 	
+	/**
+	 * Creates a new Posterior Decoding from a Hidden Markov Model.
+	 * @param hmm		a hidden markov model
+	 */
 	public PosteriorDecoding(HMM hmm) {
 		this.hmm = hmm;
-
+		// Compute the forward probabilities.
 		this.forward = createScaledForward();
+		// Compute the backwards probabilities.
 		this.backward = createScaledBackward();
+		// Compute the posterior probabilities.
 		this.posterior = createScaledPosterior();
+		// Use the posterior probabilities to construct a decoded sequence.
 		this.decodedSequence = createSequence();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public HMM getHMM() {
+		return this.hmm;
+	}
+	
+	/**
+	 * Returns the forward probabilities for this decoding
+	 * @return		the forward probabilities
+	 */
 	public StateSequence<Double> getForward() {
 		return this.forward;
 	}
 	
+	/**
+	 * Returns the backwards probabilities for this decoding
+	 * @return		the backwards probabilities
+	 */
 	public StateSequence<Double> getBackward() {
 		return this.backward;
 	}
 	
+	/**
+	 * Returns the posterior probabilities for this decoding
+	 * @return		the posterior probabilities
+	 */
 	public StateSequence<Double> getPosterior() {
 		return this.posterior;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<String> getSequence() {
 		return this.decodedSequence;
 	}
 	
+	/**
+	 * Create a sequence of forward probabilities from the associated
+	 * Hidden Markov Model.
+	 * NOTE: Uses scaling to prevent underflow.
+	 * @return		a sequence of forward probabilities
+	 */
 	private StateSequence<Double> createScaledForward() {
 		StateSequence<Double> stateProbs = new StateSequence<Double>(hmm.getStates());
 		ArrayList<Double> scales = new ArrayList<Double>();
@@ -89,6 +129,16 @@ public class PosteriorDecoding {
 		return stateProbs;
 	}
 	
+	/**
+	 * Create a sequence of backwards probabilities from the associated
+	 * Hidden Markov Model.
+	 * NOTE: Uses scaling to prevent underflow.
+	 *       This does _not_ use the same scaling factors as the forward algorithm
+	 *       (as recommended in "Biological Sequence Analysis" by Durbin, Eddy, et al. 
+	 *       (1998) p.78.  Instead we use the technique discussed at:
+	 *       http://en.wikipedia.org/wiki/Forward%E2%80%93backward_algorithm 
+	 * @return		a sequence of backwards probabilities
+	 */
 	private StateSequence<Double> createScaledBackward() {
 		ArrayList<Double> scales = new ArrayList<Double>();
 		StateSequence<Double>  stateProbs = new StateSequence<Double>(hmm.getStates());
@@ -151,24 +201,35 @@ public class PosteriorDecoding {
 		return stateProbs;
 	}
 	
+	/**
+	 * Create a sequence of posterior probabilities from the associated
+	 * Hidden Markov Model.
+	 * NOTE: Uses the scaling technique found at 
+	 *       http://en.wikipedia.org/wiki/Forward%E2%80%93backward_algorithm
+	 * @return		a sequence of posterior probabilities
+	 */
 	private StateSequence<Double> createScaledPosterior() {
 		StateSequence<Double> posterior = new StateSequence<Double>(hmm.getStates());
 		List<Double> posteriorScales = new ArrayList<Double>();
-		
+		// For every emission...
+		// NOTE: forward sequence is is one behind the backwards.
 		for (int i = 0; i <= hmm.getEmissionSequence().size(); i++) {
-			
+			//1) For every hidden state that can produce the emission...
 			for (String state : hmm.getStates()) {
 				Double total = 0.0;
+				// If it is the first emission, include the probabilities for the Begin State
 				if (i == 0) {
 					Double f = hmm.getBeginState().get(state);
 					Double b = backward.get(state, i);
 					total = f * b;
 				} 
+				// If it is the last emissions, include the probabilities for the End State.
 				else if (i == hmm.getEmissionSequence().size()) {
 					Double f = forward.get(state, i - 1);
 					Double b = hmm.getEndState().get(state);
 					total = f * b;
 				}
+				// Otherwise use the current probabilities
 				else {
 					Double f = forward.get(state, i - 1);
 					Double b = backward.get(state, i);
@@ -193,6 +254,11 @@ public class PosteriorDecoding {
 		return posterior;
 	}
 	
+	/**
+	 * Predict a sequence of states based on the probability of each state
+	 * produced by the posterior algorithm.
+	 * @return		a sequence of hidden states
+	 */
 	private List<String> createSequence() {
 		ArrayList<String> results = new ArrayList<String>();
 		for (int i = 0; i < hmm.getEmissionSequence().size(); i++) {

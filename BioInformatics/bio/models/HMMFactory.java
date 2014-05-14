@@ -3,8 +3,11 @@ package bio.models;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
-import java.util.List;
 
+/**
+ * Provides methods for creating various default Hidden Markov Models.
+ * @author Brian J. Walters
+ */
 public class HMMFactory {
 	/**
 	 * Generate the default values for an HMM following the Casino example.
@@ -83,7 +86,7 @@ public class HMMFactory {
 
 	/**
 	 * Create a Hidden Markov Model with the Weather data.
-	 * @return
+	 * @return		a hidden markov model
 	 */
 	public HMM createWeatherHMM() {
 		ArrayList<String> emissions = new ArrayList<String>(Arrays.asList("See Umbrella", "See No Umbrella"));
@@ -117,43 +120,5 @@ public class HMMFactory {
 								           "No Rain",
 								           "Rain",
 								           "Rain"));
-	}
-	
-	public void runTest() {
-		Double[] transitionProbabilities = {.01, .02, .03, .04, .05, .06, .07, .08, .09, .10,
-				                            .11, .12, .13, .14, .15, .16, .17, .18, .19, .20};
-		for (int i = 0; i < transitionProbabilities.length; i++) {
-			System.out.println("Transition Probability: " + transitionProbabilities[i]);
-			List<Double> viterbiRuns = new ArrayList<Double>();
-			List<Double> posteriorRuns = new ArrayList<Double>();
-			for (int j = 0; j < 10; j++) {
-				Double[][] transProb = { {1-transitionProbabilities[i], transitionProbabilities[i]},
-						                 {.10, .9} };
-				HMM hmm = createCasinoHMM(transProb);
-				HMMSequenceGenerator.createSequenceFromHMM(hmm, 1000);
-				ViterbiDecoding viterbi = new ViterbiDecoding(hmm);
-				PosteriorDecoding posterior = new PosteriorDecoding(hmm);
-				viterbiRuns.add(hmm.compareDecodedSequence(viterbi.getSequence()));
-				posteriorRuns.add(hmm.compareDecodedSequence(posterior.getSequence()));
-			}
-			
-			Double viterbiAverage = 0.0;
-			for (Double value : viterbiRuns) {
-				viterbiAverage += value;
-			}
-			viterbiAverage = viterbiAverage / viterbiRuns.size();
-			
-			Double posteriorAverage = 0.0;
-			for (Double value : posteriorRuns) {
-				posteriorAverage += value;
-			}
-			posteriorAverage = posteriorAverage / posteriorRuns.size();
-			
-			System.out.println("Vertbi %error: " + viterbiRuns);
-			System.out.println("  Average: " + viterbiAverage);
-			System.out.println("Posterior %error: " + posteriorRuns);
-			System.out.println("  Average: " + posteriorAverage);
-			System.out.println(); 
-		}
 	}
 }

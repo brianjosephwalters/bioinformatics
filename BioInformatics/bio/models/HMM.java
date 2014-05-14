@@ -3,16 +3,21 @@ package bio.models;
 import java.util.Hashtable;
 import java.util.List;
 
+/**
+ * A Hidden Markov Model (HMM).
+ * @author Brian J. Walters
+ *
+ */
 public class HMM {
-	List<String> emissions;
-	List<String> states;
-	LookupTable<Double> emissionProb;
-	LookupTable<Double> stateProb;
-	Hashtable<String, Double> beginStateProb;
-	Hashtable<String, Double> endStateProb;
+	private List<String> emissions;
+	private List<String> states;
+	private LookupTable<Double> emissionProb;
+	private LookupTable<Double> stateProb;
+	private Hashtable<String, Double> beginStateProb;
+	private Hashtable<String, Double> endStateProb;
 	
-	List<String> emissionSequence;
-	List<String> stateSequence;
+	private List<String> emissionSequence;
+	private List<String> stateSequence;
 	
 	/**
 	 * Create a new Hidden Markov Model.  
@@ -122,6 +127,18 @@ public class HMM {
 	public Hashtable<String, Double> getEmissionProbabilities(String state) {
 		return this.emissionProb.get(state);
 	}
+	
+	/**
+	 * Sets the emission probabilities for this HMM.
+	 * @require			for each state in table.getAlphaKeys()
+	 *                      this.states.contains(state)
+	 *                  for each emission in table.getBetaKeys()
+	 *                      this.emissions.contains(emission)
+	 * @param table		a table of emission probabilities for a state
+	 */
+	public void setEmissionProbabilities(LookupTable<Double> table) {
+		this.emissionProb = table;
+	}
 		
 	/**
 	 * Returns the state transition probability from state alpha to state beta.
@@ -143,6 +160,18 @@ public class HMM {
 	 */
 	public Hashtable<String, Double> getStateTransitionProbabilities(String alpha) {
 		return this.stateProb.get(alpha);
+	}
+	
+	/**
+	 * Sets the state transition probabilities for this HMM.
+	 * @require			for each state in table.getAlphaKeys()
+	 *                      this.states.contains(state)
+	 *                  for each state in table.getBetaKeys()
+	 *                      this.states.contains(state)
+	 * @param table
+	 */
+	public void setStateTransitionProbabilities(LookupTable<Double> table) {
+		this.stateProb = table;
 	}
 	
 	/**
@@ -232,21 +261,152 @@ public class HMM {
 	}
 	
 	/**
-	 * Returns the proportion of index that are not coded to the same state.
+	 * Returns the proportion of indexes that are not coded to the same state.
 	 * @param decodedSequence	a sequence of states to compare with this HMM
 	 * @return
 	 */
-	public Double compareDecodedSequence(List<String> decodedSequence) {
+	public Double accuracy(List<String> decodedSequence) {
 		assert(this.stateSequence.size() == decodedSequence.size());
 		Double results = 0.0;
-		Double misses = 0.0;
+		Double hits = 0.0;
 		for (int i = 0; i < this.stateSequence.size(); i++) {
-			if (!(this.stateSequence.get(i).equals(decodedSequence.get(i)))) {
-				misses = misses + 1;
+			if (this.stateSequence.get(i).equals(decodedSequence.get(i))) {
+				hits = hits + 1;
 			}
 		}
-		results = misses / this.stateSequence.size();
+		results = hits / this.stateSequence.size();
 		return results;
+	}
+	
+	/**
+	 * Counts the number of state changes in a provided sequence and compares
+	 * that to the number of state changes in this sequence.
+	 * @param decodedSequence
+	 * @return
+	 */
+	public Double compareNumTransitions(List<String> decodedSequence) {
+		assert(this.stateSequence.size() == decodedSequence.size());
+		Double results = 0.0;
+		Double numActualTransitions = 0.0;
+		for (int i = 1; i < this.stateSequence.size(); i++) {
+			if (!(this.stateSequence.get(i).equals(this.stateSequence.get(i-1)))) {
+				numActualTransitions = numActualTransitions + 1;
+			}
+		}
+		Double numDecodedTransitions = 0.0;
+
+		for (int i = 1; i < decodedSequence.size(); i++) {
+			if (!(decodedSequence.get(i).equals(decodedSequence.get(i-1)))) {
+				numDecodedTransitions = numDecodedTransitions + 1;
+			}
+		}
+		results = numDecodedTransitions / numActualTransitions;
+		return results;
+
+	}
+	
+	/**
+	 * Calculates the number of true positives for a provided sequence
+	 * compared to the hidden states of this HMM.
+	 * @require 				states.contains(state)
+	 * @require					decodedSequence.size() == this.stateSequence.size()
+	 * @param decodedSequence	a sequence of hidden states
+	 * @param state				a state as the main condition
+	 * @return					number of true positives
+	 */
+	public Integer truePositives(List<String> decodedSequence, String state) {
+		Integer count = 0;
+		for (int i = 0; i < this.stateSequence.size(); i++) {
+			if (this.stateSequence.get(i).equals(state) &&
+				decodedSequence.get(i).equals(state))
+				count++;
+		}
+		return count;
+	}
+	
+	/**
+	 * Calculates the number of false positives for a provided sequence
+	 * compared to the hidden states of this HMM.
+	 * @require 				states.contains(state)
+	 * @require					decodedSequence.size() == this.stateSequence.size()
+	 * @param decodedSequence	a sequence of hidden states
+	 * @param state				a state as the main condition
+	 * @return					number of false positives
+	 */
+	public Integer falsePositives(List<String> decodedSequence, String state) {
+		Integer count = 0;
+		for (int i = 0; i < this.stateSequence.size(); i++) {
+			if (!this.stateSequence.get(i).equals(state) &&
+			    decodedSequence.get(i).equals(state))
+				count++;
+		}
+		return count;
+	}
+	
+	/**
+	 * Calculates the number of true negatives for a provided sequence
+	 * compared to the hidden states of this HMM.
+	 * @require 				states.contains(state)
+	 * @require					decodedSequence.size() == this.stateSequence.size()
+	 * @param decodedSequence	a sequence of hidden states
+	 * @param state				a state as the main condition
+	 * @return					number of true negatives
+	 */
+	public Integer trueNegatives(List<String> decodedSequence, String state) {
+		Integer count = 0;
+		for (int i = 0; i < this.stateSequence.size(); i++){
+			if (!this.stateSequence.get(i).equals(state) &&
+				!decodedSequence.get(i).equals(state))
+				count++;
+		}
+		return count;
+	}
+	
+	/**
+	 * Calculates the number of false negatives for a provided sequence
+	 * compared to the hidden states of this HMM.
+	 * @require 				states.contains(state)
+	 * @require					decodedSequence.size() == this.stateSequence.size()
+	 * @param decodedSequence	a sequence of hidden states
+	 * @param state				a state as the main condition
+	 * @return					number of false negatives
+	 */
+	public Integer falseNegatives(List<String> decodedSequence, String state) {
+		Integer count = 0;
+		for (int i = 0; i < this.stateSequence.size(); i++) {
+			if (this.stateSequence.get(i).equals(state) &&
+			    !decodedSequence.get(i).equals(state))
+				count++;
+		}
+		return count;
+	}
+	
+	/**
+	 * Calculates the sensitivity of a provided sequence to the hidden states of this HMM.
+	 * @require 				states.contains(state)
+	 * @require					decodedSequence.size() == this.stateSequence.size()
+	 * @param decodedSequence	a sequence of hidden states
+	 * @param state				a state as the main condition
+	 * @return					the sensitivity of this sequence
+	 */
+	public Double sensitivity(List<String> decodedSequence, String state) {
+		Integer TP = truePositives(decodedSequence, state);
+		Integer FN = falseNegatives(decodedSequence, state);
+		return TP / Double.valueOf(TP + FN);
+	}
+	
+	/**
+	 * Calculates the specificity of a provided sequence to the hidden states of this HMM.
+	 * @require 				states.contains(state)
+	 * @require					decodedSequence.size() == this.stateSequence.size()
+	 * @param decodedSequence	a sequence of hidden states
+	 * @param state				a state as the main condition
+	 * @return					the sensitivity of this sequence
+	 */
+	public Double specificity(List<String> decodedSequence, String state) {
+		Integer TN = trueNegatives(decodedSequence, state);
+		Integer FP = falsePositives(decodedSequence, state);
+		return TN / Double.valueOf(TN + FP);
 	}
 	
 	/**

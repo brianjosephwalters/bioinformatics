@@ -1,7 +1,10 @@
 package bio.views;
 
 import java.util.Scanner;
-
+/**
+ * An abstract class for the BioInformatics TUI.
+ * @author Brian J. Waters
+ */
 public abstract class AbstractView implements ViewInterface {
 	// Instance Variables
 	private Scanner scanner;
@@ -24,6 +27,36 @@ public abstract class AbstractView implements ViewInterface {
 	 * @param choice	the user's choice 	 
 	 */
 	protected abstract void performChoice(int choice);
+	
+	/**
+	 * Displays a prompt to the user and waits for an
+	 * Integer to be entered
+	 * @param prompt	a string to display
+	 * @return			an integer the user entered
+	 */
+	protected Integer getInteger(String prompt) {
+		Integer choice = null;
+		while (choice == null) {
+			System.out.println(prompt);
+			choice = scanner.nextInt();
+		}
+		return choice;
+	}
+	
+	/**
+	 * Displays a prompt to the user and waits for a
+	 * line of characters to be entered
+	 * @param prompt	a string to display
+	 * @return			a line of characters
+	 */
+	protected String getLine(String prompt) {
+		String result = "";
+		while (result == "") {
+			System.out.println(prompt);
+			result = scanner.nextLine();
+		}
+		return result;
+	}
 	
 	/**
 	 * {@inheritDoc}
